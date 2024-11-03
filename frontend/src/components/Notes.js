@@ -1,15 +1,16 @@
 // src/components/Notes.js
 import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
+import '../styles/notes.css';
 
 const Notes = () => {
   const [activeTab, setActiveTab] = useState('notes');
   const [notes, setNotes] = useState([]);
   const [noteIndex, setNoteIndex] = useState(0);
+  const [typedNotes, setTypedNotes] = useState(new Set());
   const [chatHistory, setChatHistory] = useState([]);
   const [userMessage, setUserMessage] = useState('');
 
-  // Sample notes for testing
   const sampleNotes = [
     "1. Meeting started, discussing project goals.",
     "2. Key objectives: Improve user experience and increase engagement.",
@@ -21,7 +22,6 @@ const Notes = () => {
     "8. Meeting adjourned, awaiting further updates."
   ];
 
-  // Simulate note updates every 10 seconds
   useEffect(() => {
     const addNote = () => {
       if (noteIndex < sampleNotes.length) {
@@ -29,62 +29,65 @@ const Notes = () => {
         setNoteIndex((prevIndex) => prevIndex + 1);
       }
     };
-
-    const intervalId = setInterval(addNote, 10000);
+    const intervalId = setInterval(addNote, 10000); // Adds a new note every 10 seconds
     return () => clearInterval(intervalId);
   }, [noteIndex]);
 
-  // Handle chat message submission with simulated response
   const handleChatSubmit = (e) => {
     e.preventDefault();
-
     setChatHistory((prevHistory) => [...prevHistory, { sender: 'user', message: userMessage }]);
-    
-    // Simulate a response with a delay
     setTimeout(() => {
       const simulatedResponse = "This is a simulated response based on the notes.";
       setChatHistory((prevHistory) => [...prevHistory, { sender: 'gemini', message: simulatedResponse }]);
     }, 1000);
+    setUserMessage('');
+  };
 
-    setUserMessage(''); // Clear the input
+  const handleAnimationEnd = (index) => {
+    setTypedNotes((prev) => new Set(prev).add(index));
   };
 
   return (
-    <div style={{ padding: '20px', height: '100%', overflowY: 'scroll' }}>
-      {/* Tab Navigation */}
-      <div style={{ display: 'flex', marginBottom: '10px' }}>
-        <button onClick={() => setActiveTab('notes')} style={{ flex: 1, padding: '10px', background: activeTab === 'notes' ? '#ccc' : '#eee' }}>
+    <div className="notes-container">
+      <div className="tab-buttons">
+        <button onClick={() => setActiveTab('notes')} className={`tab-button ${activeTab === 'notes' ? 'active' : ''}`}>
           Notes
         </button>
-        <button onClick={() => setActiveTab('chat')} style={{ flex: 1, padding: '10px', background: activeTab === 'chat' ? '#ccc' : '#eee' }}>
+        <button onClick={() => setActiveTab('chat')} className={`tab-button ${activeTab === 'chat' ? 'active' : ''}`}>
           Chat
         </button>
       </div>
 
-      {/* Notes Tab */}
       {activeTab === 'notes' && (
-        <div>
-          <ReactMarkdown>{notes.join("\n\n")}</ReactMarkdown>
+        <div className="static-notes">
+          {notes.map((note, index) => (
+            <div
+              key={index}
+              className={`note ${typedNotes.has(index) ? 'typed' : 'typewriter'}`}
+              onAnimationEnd={() => handleAnimationEnd(index)}
+            >
+              <ReactMarkdown>{note}</ReactMarkdown>
+            </div>
+          ))}
         </div>
       )}
 
-      {/* Chat Tab */}
       {activeTab === 'chat' && (
-        <div>
-          <div style={{ maxHeight: '300px', overflowY: 'auto', border: '1px solid #ddd', padding: '10px', marginBottom: '10px' }}>
+        <div className="chat-area">
+          <div className="chat-history">
             {chatHistory.map((chat, index) => (
-              <div key={index} style={{ textAlign: chat.sender === 'user' ? 'right' : 'left', margin: '5px 0' }}>
+              <div key={index} className={`chat-bubble ${chat.sender}`}>
                 <strong>{chat.sender === 'user' ? 'You' : 'Gemini'}:</strong> {chat.message}
               </div>
             ))}
           </div>
-          <form onSubmit={handleChatSubmit}>
+          <form onSubmit={handleChatSubmit} className="chat-form">
             <input
               type="text"
               value={userMessage}
               onChange={(e) => setUserMessage(e.target.value)}
               placeholder="Type a message..."
-              style={{ width: '100%', padding: '10px' }}
+              className="chat-input"
             />
           </form>
         </div>
