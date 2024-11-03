@@ -1,5 +1,114 @@
-.container {
-    display: flex;
-    flex-direction: row;
-}
+/* summary.css */
 
+.summary-container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    align-items: stretch;
+  }
+  
+  .left-section {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .right-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Shared styles for component containers */
+  .recording, .notes, .chat-box-container {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e0e0e0;
+  }
+  
+  /* Specific styles for the recording section */
+  .recording h2, .notes h2, .chat-box-container h2 {
+    font-size: 18px;
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 15px;
+  }
+  
+  /* Meeting Notes styles */
+  .notes-content {
+    color: #333;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  
+  /* Chat Box Container styles */
+  .chat-box-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  
+  /* Chat-specific styling */
+  .chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  
+  .chat-history {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+    background-color: #fafafa;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+    margin-bottom: 10px;
+  }
+  
+  .chat-bubble {
+    padding: 10px 14px;
+    border-radius: 18px;
+    max-width: 75%;
+    line-height: 1.4;
+    font-size: 14px;
+    word-wrap: break-word;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .chat-bubble.user {
+    background-color: #e1f5fe;
+    color: #333;
+    align-self: flex-end;
+    border-radius: 18px 18px 0px 18px;
+  }
+  
+  .chat-bubble.ai {
+    background-color: #4b7bec;
+    color: white;
+    align-self: flex-start;
+    border-radius: 18px 18px 18px 0px;
+  }
+  
+  .chat-form {
+    display: flex;
+    padding-top: 10px;
+  }
+  
+  .chat-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    font-size: 15px;
+    outline: none;
+    box-shadow: none;
+  }
+  
+  .chat-input::placeholder {
+    color: #aaa;
+  }
+  
