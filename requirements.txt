@@ -1,0 +1,8 @@
+asgiref                            3.8.1
+llama-index-core                   0.11.21
+llama-index-llms-anthropic         0.3.8
+llama-index-llms-openai            0.2.16
+openai                             1.53.0
+python-dotenv                      1.0.1
+google-auth-oauthlib
+google-api-python-client
