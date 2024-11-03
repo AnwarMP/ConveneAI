@@ -198,6 +198,7 @@ class GeminiAgent:
             raise ValueError("Google API key must be provided")
         genai.configure(api_key=self.api_key)
         self.model = None
+        self.initialize_with_video( video_path='/Users/anwarmujeeb/Desktop/ConveneAI/src/v2.mp4')
 
     def initialize_with_video(self, video_path: str) -> None:
         """Initialize the model with video and cache it for 10 minutes"""
@@ -214,7 +215,7 @@ class GeminiAgent:
 
         # Create cache with 10 minute TTL
         cache = caching.CachedContent.create(
-            model='models/gemini-1.5-pro-latest',
+            model='models/gemini-1.5-flash-001',
             display_name='meeting_video',
             system_instruction="""You are an expert video analyzer, and your job is to answer 
             the user's query based on the video file you have access to.""",
@@ -224,37 +225,103 @@ class GeminiAgent:
 
         self.model = genai.GenerativeModel.from_cached_content(cached_content=cache)
 
-    def analyze_transcript(self, transcript: str) -> str:
-        """Analyze transcript for correctness and add visual cues"""
+    def analyze_transcript(self, transcript: str, existing_notes: str = '') -> str:
+        """
+        Analyze and enhance the recorded meeting transcript.
+        
+        Args:
+            transcript: Raw transcript from the recording
+            existing_notes: Current meeting notes for context
+        
+        Returns:
+            str: Enhanced transcript with corrected timestamps and added visual cues
+        """
         if not self.model:
             raise ValueError("Model not initialized with video")
 
         prompt = f"""
-        I have a transcript for this video.
+        Please analyze and enhance this meeting transcript by:
+        1. Correcting any timestamp inconsistencies or errors
+        2. Adding visual cues and gestures observed in the video:
+        - Nodding or shaking head
+        - Hand gestures
+        - Pointing or presenting
+        - Screen sharing activities
+        - Any other notable visual interactions
+        3. Clarifying speaker identification if unclear
+        4. Noting any significant pauses or overlapping speech
+        5. Adding context markers for better readability
+
+        Consider these existing notes for context:
+        {existing_notes or "No existing notes available"}
+
+        Raw Transcript:
         {transcript}
 
-        Go through the transcript and the timestamps. Make sure they are correct. 
-        If not, fix them. Also try detecting specific head and hand gestures, 
-        such as nodding and shaking and thumbs up and down, during a video-recorded meeting and add them 
-        to the transcript if detected.
+        Please return the enhanced transcript maintaining the original format but with visual cues 
+        and corrections integrated naturally into the text. Keep timestamps in [HH:MM:SS] format.
         """
 
-        response = self.model.generate_content(
-            prompt,
-            generation_config=genai.types.GenerationConfig(temperature=0.0)
-        )
-        
-        return response.text
+        try:
+            response = self.model.generate_content(
+                prompt,
+                generation_config=genai.types.GenerationConfig(
+                    temperature=0.0,
+                    candidate_count=1,
+                    max_output_tokens=2048,
+                    top_p=0.8,
+                    top_k=40
+                )
+            )
+            
+            return response.text
+        except Exception as e:
+            print(f"Error enhancing transcript: {str(e)}")
+            return f"Error processing transcript: {str(e)}"
 
-    def chat(self, prompt: str) -> str:
-        """Chat about the video using the cached model"""
+    def chat(self, prompt: str, chat_history: str = '') -> str:
+        """
+        Chat about the video/meeting using the cached model.
+        
+        Args:
+            prompt: User's message or question
+            chat_history: Previous chat messages for context
+        
+        Returns:
+            str: Gemini's response
+        """
         if not self.model:
             raise ValueError("Model not initialized with video")
 
-        response = self.model.generate_content(
-            prompt,
-            generation_config=genai.types.GenerationConfig(temperature=0.0)
-        )
+        context = f"""
+        Based on the video content and our previous discussion:
+        {chat_history}
+
+        Please respond to this message:
+        {prompt}
+
+        Consider:
+        1. The visual content from the video
+        2. Previous context from our chat
+        3. Any relevant discussions or decisions made
+        4. Specific details about what was shown or demonstrated
         
-        return response.text
-    
+        Be specific and reference actual content from the video when relevant.
+        """
+
+        try:
+            response = self.model.generate_content(
+                context,
+                generation_config=genai.types.GenerationConfig(
+                    temperature=0.2,  # Slightly higher for more natural conversation
+                    candidate_count=1,
+                    max_output_tokens=1024,
+                    top_p=0.8,
+                    top_k=40
+                )
+            )
+            
+            return response.text
+        except Exception as e:
+            print(f"Error generating chat response: {str(e)}")
+            return f"Error processing message: {str(e)}"

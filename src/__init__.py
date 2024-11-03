@@ -21,4 +21,5 @@ from .services.email_service import EmailService
 __all__ = [
     'MeetingAnalysisAgent',
     'EmailService',
+    'GeminiAgent'
 ]
