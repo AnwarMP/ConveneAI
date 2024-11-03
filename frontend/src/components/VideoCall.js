@@ -10,19 +10,19 @@ const VideoCall = ({ url }) => {
     console.log("Mounting VideoCall component");
 
     if (!callFrameRef.current) {
-      console.log("Creating DailyIframe instance");
+      console.log("Creating DailyIframe instance with built-in controls");
       callFrameRef.current = DailyIframe.createFrame(videoContainerRef.current, {
         showLeaveButton: true,
+        showFullscreenButton: true,
         iframeStyle: {
           width: '100%',
           height: '100%',
         },
       });
 
-      // Join the call and start recording
+      // Join the call without starting recording
       callFrameRef.current.join({ url }).then(() => {
-        console.log("Joined the call, starting recording...");
-        callFrameRef.current.startRecording();
+        console.log("Joined the call");
       });
 
       // Listen for recording events
@@ -32,11 +32,12 @@ const VideoCall = ({ url }) => {
 
       callFrameRef.current.on('recording-stopped', (event) => {
         console.log("Recording stopped, recording info:", event);
-        // Access the recording ID and URL from event data
+
+        // Access the recording URL if available
         const recordingUrl = event?.recording?.download_url;
         if (recordingUrl) {
           console.log("Recording available at:", recordingUrl);
-          // Optionally, you could trigger a download or save the URL
+          // Optionally, handle the recording URL as needed
         }
       });
     }
@@ -44,11 +45,6 @@ const VideoCall = ({ url }) => {
     return () => {
       if (callFrameRef.current) {
         console.log("Cleaning up DailyIframe instance");
-
-        // Stop recording when leaving the call
-        callFrameRef.current.stopRecording().then(() => {
-          console.log("Stopped recording before leaving the call");
-        });
 
         // Leave the call and clean up
         callFrameRef.current.leave();
