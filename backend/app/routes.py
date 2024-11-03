@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from src.agent import EmailQueryAgent
+from src.agent import EmailQueryAgent, MeetingAnalysisAgent
 from config import Config
 
 main = Blueprint('main', __name__)
@@ -10,6 +10,23 @@ email_agent = EmailQueryAgent(
     api_key=Config.OPENAI_API_KEY
 )
 
+meeting_agent = MeetingAnalysisAgent(
+    api_key=Config.ANTHROPIC_API_KEY
+)
+
+@main.route('/health', methods=['GET'])
+def health_check():
+    return jsonify({'status': 'healthy'}), 200
+
+from flask import Blueprint, request, jsonify
+from src.agent import MeetingAnalysisAgent
+from config import Config
+
+main = Blueprint('main', __name__)
+
+# Initialize the MeetingAnalysisAgent
+meeting_agent = MeetingAnalysisAgent(api_key=Config.ANTHROPIC_API_KEY)
+
 @main.route('/health', methods=['GET'])
 def health_check():
     return jsonify({'status': 'healthy'}), 200
@@ -17,59 +34,46 @@ def health_check():
 @main.route('/analyze-transcript', methods=['POST'])
 async def analyze_transcript():
     """
-    Endpoint to analyze transcript segments for email references
+    Endpoint to analyze transcript segments and update meeting summary
     
     Expected JSON payload:
     {
-        "transcript": "string of meeting transcript"
-    }
-    
-    Returns:
-    {
-        "status": "success",
-        "results": {
-            "analysis": {
-                "context": "Why these queries were generated",
-                "queries": ["list", "of", "gmail", "queries"],
-                "extracted_info": {
-                    "sender": "sender name",
-                    "recipients": ["recipient names"],
-                    "subject": "subject line",
-                    "date_range": {"after": "date", "before": "date"},
-                    "attachment_type": "file type"
-                }
-            },
-            "confidence": 0.8
-        }
+        "transcript": "Text with timestamps and messages..."
     }
     """
     try:
         data = request.get_json()
         if not data or 'transcript' not in data:
             return jsonify({
-                'error': 'No transcript provided',
-                'example_payload': {
-                    'transcript': """
-                    John: Can you find that budget email from Sarah?
-                    Mary: The one from last week with the Excel file?
-                    John: Yes, that's the one!
-                    """
-                }
+                'error': 'No transcript provided'
             }), 400
-        
+
+        # Get the transcript text
         transcript = data['transcript']
-        analysis_results = await email_agent.analyze_transcript_segment(transcript)
+        print("Received transcript:", transcript)  # Debug log
+
+        # Process transcript for summary update - pass transcript directly
+        updated_summary = meeting_agent.process_segment(
+            existing_summary='',  # Start fresh each time
+            new_transcript=transcript  # Pass the formatted transcript directly
+        )
+
+        print("Updated summary:", updated_summary)  # Debug log
         
         return jsonify({
             'status': 'success',
-            'results': analysis_results,
+            'results': {
+                'summary': updated_summary
+            }
         }), 200
     
     except Exception as e:
+        print("Error processing transcript:", str(e))  # Debug log
         return jsonify({
             'error': str(e),
             'status': 'error'
         }), 500
+
 
 @main.route('/demo-queries', methods=['GET'])
 async def demo_queries():
@@ -124,17 +128,23 @@ async def demo_queries():
             'status': 'error'
         }), 500
     
-@main.route('/test-email', methods=['GET'])
+@main.route('/test-email', methods=['POST'])
 async def test_email():
-    """Simple test endpoint for Gmail integration"""
+    """Endpoint for direct email queries from chat"""
     try:
-        transcript = "Can you find the email from Anwar?"
+        data = request.get_json()
+        query = data.get('query', '')
         
-        analysis_results = await email_agent.analyze_transcript_segment(transcript)
+        if not query:
+            return jsonify({
+                'error': 'No query provided',
+                'status': 'error'
+            }), 400
+
+        analysis_results = await email_agent.analyze_transcript_segment(query)
         
         return jsonify({
             'status': 'success',
-            'transcript': transcript,
             'results': analysis_results
         }), 200
     
