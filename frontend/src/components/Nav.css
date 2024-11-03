@@ -1,0 +1,45 @@
+.nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    width: 100vw;
+    height: 8vh;
+
+    background-color: #ffffff;
+}
+
+.logo {
+    color: black;
+    font-size: 20px;
+    font-weight: 900;
+    margin: 0 30px;
+
+    text-decoration: none;
+}
+
+.logo-link {
+    text-decoration: none; /* Remove underline from Link */
+}
+
+.join {
+    background-color: black;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin: 0 30px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.join:hover {
+    background-color: #333333; /* Darker black on hover */
+}
+
+.gradient-text {
+    background: linear-gradient(to right, #4a90e2, #50e3c2); /* Adjust the gradient colors */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold; /* Optional: Adjust thickness if needed */
+}
