@@ -1,6 +1,7 @@
 // src/App.js
 import React from 'react';
 import VideoCall from './components/VideoCall';
+import Notes from './components/Notes'; // Import the Notes component
 import './App.css';
 
 const App = () => {
@@ -10,7 +11,9 @@ const App = () => {
       <div className="video-section">
         <VideoCall url={dailyUrl} />
       </div>
-      {/* Other components, e.g., Notes */}
+      <div className="notes-section">
+        <Notes /> {/* Add the Notes component */}
+      </div>
     </div>
   );
 };
