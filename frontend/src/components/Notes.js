@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { useNotes } from '../context/NotesContext';
+import '../styles/notes.css'
 
 const Notes = () => {
   const { latestNote } = useNotes();
@@ -14,11 +15,9 @@ const Notes = () => {
 
   return (
     <div className="notes-container">
-      <h2 className="notes-title">{`Meeting Notes - ${date}`}</h2>
+      <h2 className="notes-title">Meeting Notes - {date}</h2>
       <div className="notes-content">
-        <div className="note">
-          <ReactMarkdown>{latestNote}</ReactMarkdown>
-        </div>
+        <ReactMarkdown>{latestNote}</ReactMarkdown>
       </div>
     </div>
   );

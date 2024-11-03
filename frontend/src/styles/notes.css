@@ -1,56 +1,63 @@
-/* Main Notes container */
+/* Import a professional font */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+
+/* Apply the font to the notes container */
 .notes-container {
-    padding: 20px;
-    height: 100%;
-    overflow-y: auto;
-    background-color: #fdfdfd;
-  }
-  
-  .notes-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 1.5rem;
-  }
-  
-  .notes-content {
-    font-family: 'Georgia', serif;
-    color: #333;
-    font-size: 16px;
-    line-height: 1.6;
-    padding: 20px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  }
-  
-  .note {
-    opacity: 1;
-    transition: opacity 0.3s ease;
-  }
-  
-  .note.typing {
-    border-right: 2px solid #333;
-    animation: blink-caret 0.75s step-end infinite;
-  }
-  
-  @keyframes blink-caret {
-    from, to { border-color: transparent }
-    50% { border-color: #333 }
-  }
-  
-  /* Markdown content styling */
-  .note h1, .note h2, .note h3 {
-    margin-top: 1.5em;
-    margin-bottom: 0.5em;
-    font-weight: 600;
-  }
-  
-  .note ul, .note ol {
-    margin-left: 1.5em;
-    margin-bottom: 1em;
-  }
-  
-  .note p {
-    margin-bottom: 1em;
-  }
+  font-family: 'Roboto', sans-serif;
+  padding: 20px;
+  background-color: #f4f6f8;
+  width: 100%;
+  height: 100%;
+}
+
+/* Style the title */
+.notes-title {
+  font-size: 1.75rem;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 16px;
+}
+
+/* Style the notes content box */
+.notes-content {
+  background-color: #f9f9f9; /* Light grey background */
+  border: 1px solid #dfe3e8;
+  border-radius: 8px; /* Rounded corners */
+  padding: 24px;
+  max-width: 800px;
+  margin: 0 auto;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #555;
+  min-height: 85vh; /* Set minimum height */
+  overflow: auto; /* Enable scrolling if content exceeds the box size */
+}
+
+/* Optional: Style Markdown elements */
+.notes-content h1,
+.notes-content h2,
+.notes-content h3 {
+  color: #333;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: 500;
+}
+
+.notes-content p {
+  margin-bottom: 1em;
+}
+
+.notes-content ul,
+.notes-content ol {
+  margin-left: 1.5em;
+  margin-bottom: 1em;
+}
+
+.notes-content a {
+  color: #1a73e8;
+  text-decoration: none;
+}
+
+.notes-content a:hover {
+  text-decoration: underline;
+}
