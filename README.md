@@ -23,8 +23,9 @@ To create the environment and install all dependencies from `environment.yml`, r
 
 ```bash
 # Create and activate environment
-conda env create -f environment.yml
+conda create -n meeting-assistant python=3.10
 conda activate meeting-assistant
+conda install --file requirements.txt
 ```
 
 ### 2. Environment Variables
@@ -44,7 +45,7 @@ For secure storage of additional credentials (e.g., `token.json` for Gmail API a
 
 ```bash
 # Create .credentials directory in backend
-mkdir -p backend/.credentials
+not
 ```
 
 **Note**: Ask Anwar for the necessary tokens and place them in the `.credentials` directory.

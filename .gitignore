@@ -28,5 +28,5 @@ build/
 venv/
 env/
 ENV/
-
+repomix-output.*
 .credentials
