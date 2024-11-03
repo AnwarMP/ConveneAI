@@ -1,0 +1,20 @@
+
+
+.app-container {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  width: 100vw;
+}
+
+.video-section {
+  flex: 1.5; 
+  height: 100%; 
+  border-right: 1px solid #ccc;
+}
+
+.notes-section {
+  flex: 2;
+  overflow-y: auto;
+  height: 100%; 
+}
