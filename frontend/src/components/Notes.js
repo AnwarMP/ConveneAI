@@ -30,9 +30,6 @@ const Notes = () => {
   return (
     <div className="notes-container">
       <h2 className="notes-title">{`Meeting Notes - ${date}`}</h2>
-      <div className="tab-buttons">
-        <button className="tab-button active">Notes</button>
-      </div>
 
       <div className="static-notes">
         {notes.map((note, index) => {

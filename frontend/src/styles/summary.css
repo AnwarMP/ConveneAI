@@ -1,64 +1,62 @@
-/* summary.css */
-
 .summary-container {
     display: flex;
     gap: 20px;
     padding: 20px;
     align-items: stretch;
-  }
-  
-  .left-section {
+}
+
+.left-section {
     flex: 2;
     display: flex;
     flex-direction: column;
     gap: 20px;
-  }
-  
-  .right-section {
+}
+
+.right-section {
     flex: 1;
     display: flex;
     flex-direction: column;
-  }
-  
-  /* Shared styles for component containers */
-  .recording, .notes, .chat-box-container {
+}
+
+/* Shared styles for component containers */
+.recording, .notes, .chat-box-container {
     background-color: #ffffff;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
     border: 1px solid #e0e0e0;
-  }
-  
-  /* Specific styles for the recording section */
-  .recording h2, .notes h2, .chat-box-container h2 {
+}
+
+/* Specific styles for the recording section */
+.recording h2, .notes h2, .chat-box-container h2 {
     font-size: 18px;
     color: #333;
     font-weight: 600;
     margin-bottom: 15px;
-  }
-  
-  /* Meeting Notes styles */
-  .notes-content {
+}
+
+/* Meeting Notes styles */
+.notes-content {
     color: #333;
     font-size: 15px;
     line-height: 1.6;
-  }
-  
-  /* Chat Box Container styles */
-  .chat-box-container {
+}
+
+/* Chat Box Container styles */
+.chat-box-container {
     display: flex;
     flex-direction: column;
     height: 100%;
-  }
-  
-  /* Chat-specific styling */
-  .chat-container {
+}
+
+/* Chat-specific styling */
+.chat-container {
     display: flex;
     flex-direction: column;
     height: 100%;
-  }
-  
-  .chat-history {
+}
+
+.chat-history {
     flex: 1;
     overflow-y: auto;
     padding: 12px;
@@ -67,9 +65,10 @@
     border: 1px solid #e0e0e0;
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
     margin-bottom: 10px;
-  }
-  
-  .chat-bubble {
+}
+
+/* Chat bubble styling */
+.chat-bubble {
     padding: 10px 14px;
     border-radius: 18px;
     max-width: 75%;
@@ -77,28 +76,37 @@
     font-size: 14px;
     word-wrap: break-word;
     box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
-  }
-  
-  .chat-bubble.user {
+    margin-bottom: 8px; /* Space between bubbles */
+    position: relative;
+}
+
+/* User (right-aligned) bubble */
+.chat-bubble.user {
     background-color: #e1f5fe;
     color: #333;
-    align-self: flex-end;
+    align-self: flex-end; /* Right-align the user bubble */
     border-radius: 18px 18px 0px 18px;
-  }
-  
-  .chat-bubble.ai {
+    text-align: left;
+    margin-left: auto;
+}
+
+/* AI (left-aligned) bubble */
+.chat-bubble.ai {
     background-color: #4b7bec;
     color: white;
-    align-self: flex-start;
+    align-self: flex-start; /* Left-align the AI bubble */
     border-radius: 18px 18px 18px 0px;
-  }
-  
-  .chat-form {
+    text-align: left;
+    margin-right: auto;
+}
+
+/* Chat input styling */
+.chat-form {
     display: flex;
     padding-top: 10px;
-  }
-  
-  .chat-input {
+}
+
+.chat-input {
     width: 100%;
     padding: 10px;
     border: 1px solid #ddd;
@@ -106,9 +114,8 @@
     font-size: 15px;
     outline: none;
     box-shadow: none;
-  }
-  
-  .chat-input::placeholder {
+}
+
+.chat-input::placeholder {
     color: #aaa;
-  }
-  
+}
