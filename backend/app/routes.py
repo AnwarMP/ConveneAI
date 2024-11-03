@@ -1,14 +1,10 @@
 from flask import Blueprint, request, jsonify
-from src.agent import EmailQueryAgent, MeetingAnalysisAgent
+from src.agent import MeetingAnalysisAgent
 from config import Config
 
 main = Blueprint('main', __name__)
 
-# Initialize with OpenAI
-email_agent = EmailQueryAgent(
-    llm_provider="openai",
-    api_key=Config.OPENAI_API_KEY
-)
+
 
 # Initialize the MeetingAnalysisAgent (single instance)
 meeting_agent = MeetingAnalysisAgent(api_key=Config.ANTHROPIC_API_KEY)

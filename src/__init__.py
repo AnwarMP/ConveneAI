@@ -14,14 +14,11 @@ PROJECT_ROOT = SRC_ROOT.parent
 __version__ = "0.1.0"
 
 # Import commonly used components for easier access
-from .agent import EmailQueryAgent, MeetingAnalysisAgent
+from .agent import MeetingAnalysisAgent
 from .services.email_service import EmailService
-from .utils.query_generator import EmailQueryGenerator
 
 # Define what should be available when someone does 'from src import *'
 __all__ = [
-    'EmailQueryAgent',
     'MeetingAnalysisAgent',
     'EmailService',
-    'EmailQueryGenerator'
 ]
