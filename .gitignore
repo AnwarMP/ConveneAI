@@ -30,3 +30,6 @@ env/
 ENV/
 repomix-output.*
 .credentials
+
+*.mp4
+*/*.mp4
