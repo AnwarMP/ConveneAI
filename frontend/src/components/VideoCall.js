@@ -1,4 +1,3 @@
-// src/components/VideoCall.js
 import React, { useEffect, useRef, useState } from 'react';
 import DailyIframe from '@daily-co/daily-js';
 import { useNotes } from '../context/NotesContext';
@@ -9,6 +8,7 @@ const VideoCall = ({ url }) => {
   const [transcriptBuffer, setTranscriptBuffer] = useState([]);
   const { addNote } = useNotes();
   const currentSummaryRef = useRef('');
+  const fullTranscriptRef = useRef('');
 
   const logWithTimestamp = (message, data = null) => {
     const timestamp = new Date().toISOString();
@@ -20,16 +20,20 @@ const VideoCall = ({ url }) => {
     }
   };
 
-  const sendTranscriptToBackend = async (transcript) => {
+  const sendTranscriptToBackend = async (newTranscript) => {
     try {
-      logWithTimestamp('Sending transcript to backend:', transcript);
+      logWithTimestamp('Sending transcript to backend:', {
+        newSegmentLength: newTranscript.length,
+        fullTranscriptLength: fullTranscriptRef.current.length
+      });
       
       const response = await fetch('http://localhost:5000/analyze-transcript', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          transcript,
-          existing_summary: currentSummaryRef.current 
+          transcript: newTranscript,
+          existing_summary: currentSummaryRef.current,
+          full_transcript: fullTranscriptRef.current 
         }),
       });
 
@@ -38,6 +42,11 @@ const VideoCall = ({ url }) => {
       
       if (data?.results?.summary) {
         currentSummaryRef.current = data.results.summary;
+        // Append new transcript to full history
+        fullTranscriptRef.current = fullTranscriptRef.current 
+          ? `${fullTranscriptRef.current}\n${newTranscript}`
+          : newTranscript;
+        
         logWithTimestamp('Adding new note to context:', data.results.summary);
         addNote(data.results.summary);
       }
