@@ -1,16 +1,56 @@
 // src/components/VideoCall.js
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import DailyIframe from '@daily-co/daily-js';
+import { useNotes } from '../context/NotesContext';
 
 const VideoCall = ({ url }) => {
   const videoContainerRef = useRef(null);
   const callFrameRef = useRef(null);
+  const [transcriptBuffer, setTranscriptBuffer] = useState([]);
+  const { addNote } = useNotes();
+  const currentSummaryRef = useRef('');
+
+  const logWithTimestamp = (message, data = null) => {
+    const timestamp = new Date().toISOString();
+    const logMessage = `[${timestamp}] VideoCall: ${message}`;
+    if (data) {
+      console.log(logMessage, data);
+    } else {
+      console.log(logMessage);
+    }
+  };
+
+  const sendTranscriptToBackend = async (transcript) => {
+    try {
+      logWithTimestamp('Sending transcript to backend:', transcript);
+      
+      const response = await fetch('http://localhost:5000/analyze-transcript', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          transcript,
+          existing_summary: currentSummaryRef.current 
+        }),
+      });
+
+      const data = await response.json();
+      logWithTimestamp('Received response from backend:', data);
+      
+      if (data?.results?.summary) {
+        currentSummaryRef.current = data.results.summary;
+        logWithTimestamp('Adding new note to context:', data.results.summary);
+        addNote(data.results.summary);
+      }
+    } catch (error) {
+      logWithTimestamp('Error sending transcript:', error);
+    }
+  };
 
   useEffect(() => {
-    console.log("Mounting VideoCall component");
-
+    logWithTimestamp('Component mounting');
+    
     if (!callFrameRef.current) {
-      console.log("Creating DailyIframe instance with built-in controls");
+      logWithTimestamp('Creating DailyIframe instance');
       callFrameRef.current = DailyIframe.createFrame(videoContainerRef.current, {
         showLeaveButton: true,
         showFullscreenButton: true,
@@ -20,43 +60,47 @@ const VideoCall = ({ url }) => {
         },
       });
 
-      // Meeting token to make you owner of meeting -> need to enable transcription
       const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvIjp0cnVlLCJkIjoiNmI2YWQzMzYtNjZhMS00NDk2LWI3NWItMTQ5YTk1NGE5ZjAwIiwiaWF0IjoxNzMwNjAyMTU2fQ.2LAsgzL82X1JfxvDOGiLsajaERRCGWkSjtKX3u66NLc';
-      // Join the call without starting recording
-      callFrameRef.current.join({ url, token }).then(() => {
-        console.log("Joined the call");
-        //Start transcription immediately when you join meeting
-        callFrameRef.current.startTranscription();
-        console.log("Started the transcript");
-      });
 
-      // Listen for recording events
-      callFrameRef.current.on('recording-started', () => {
-        console.log("Recording started");
-      });
+      callFrameRef.current.join({ url, token })
+        .then(() => {
+          logWithTimestamp('Joined call, starting transcription');
+          return callFrameRef.current.startTranscription();
+        })
+        .then(() => {
+          logWithTimestamp('Transcription started');
+        })
+        .catch(error => {
+          logWithTimestamp('Error setting up call:', error);
+        });
 
-      callFrameRef.current.on('recording-stopped', (event) => {
-        console.log("Recording stopped, recording info:", event);
-
-        // Access the recording URL if available
-        const recordingUrl = event?.recording?.download_url;
-        if (recordingUrl) {
-          console.log("Recording available at:", recordingUrl);
-          // Optionally, handle the recording URL as needed
-        }
-      });
-
-      // Add app-message event listener
       callFrameRef.current.on('app-message', (message) => {
-        console.log("App message received:", message);
+        logWithTimestamp('Received app message:', message);
+        setTranscriptBuffer((prevBuffer) => {
+          const updatedBuffer = [...prevBuffer, message.data];
+          logWithTimestamp('Current buffer size:', updatedBuffer.length);
+          
+          if (updatedBuffer.length >= 10) {
+            logWithTimestamp('Buffer full (10 messages), processing transcript');
+            const formattedTranscript = updatedBuffer
+              .map((msg) => `[${msg.timestamp}] ${msg.user_name || ""}: ${msg.text}`)
+              .join('\n');
+            logWithTimestamp('Formatted transcript:', formattedTranscript);
+            sendTranscriptToBackend(formattedTranscript);
+            return [];
+          }
+          return updatedBuffer;
+        });
+      });
+
+      callFrameRef.current.on('error', (error) => {
+        logWithTimestamp('Daily.co error:', error);
       });
     }
 
     return () => {
+      logWithTimestamp('Cleaning up');
       if (callFrameRef.current) {
-        console.log("Cleaning up DailyIframe instance");
-
-        // Leave the call and clean up
         callFrameRef.current.leave();
         callFrameRef.current.destroy();
         callFrameRef.current = null;

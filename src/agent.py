@@ -13,6 +13,18 @@ import re
 from typing import Dict, Any
 
 from src.utils import *
+
+# Define a simple dummy function
+def noop_function():
+    """A no-operation function."""
+    return {"status": "No operation performed"}
+
+dummy_tool = FunctionTool.from_defaults(
+    noop_function,
+    name="NoOpTool",
+    description="A dummy tool for testing purposes"
+)
+
 class MeetingAnalysisAgent:
     def __init__(self, api_key: Optional[str] = None):
         """Initialize the meeting analysis agent"""
@@ -59,7 +71,7 @@ class MeetingAnalysisAgent:
         ]
         
         return FunctionCallingAgent.from_tools(
-            tools=[],  # Tools will be added later
+            tools=[dummy_tool],
             llm=self.llm,
             verbose=True,
             prefix_messages=prefix_messages
