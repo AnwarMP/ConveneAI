@@ -9,9 +9,9 @@ export const Nav = () => {
         <Link to='/' className="logo-link">
           <div className='logo'>Convene<span className="gradient-text">AI</span></div>
         </Link>
-        <div className="join">
-            Join A Meeting
-        </div>
+        <Link to='/meeting' className="logo-link">
+            <div className="join">Join A Meeting</div>
+        </Link>
       </div>
     );
 }
