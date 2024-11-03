@@ -10,26 +10,8 @@ email_agent = EmailQueryAgent(
     api_key=Config.OPENAI_API_KEY
 )
 
-meeting_agent = MeetingAnalysisAgent(
-    api_key=Config.ANTHROPIC_API_KEY
-)
-
-@main.route('/health', methods=['GET'])
-def health_check():
-    return jsonify({'status': 'healthy'}), 200
-
-from flask import Blueprint, request, jsonify
-from src.agent import MeetingAnalysisAgent
-from config import Config
-
-main = Blueprint('main', __name__)
-
-# Initialize the MeetingAnalysisAgent
+# Initialize the MeetingAnalysisAgent (single instance)
 meeting_agent = MeetingAnalysisAgent(api_key=Config.ANTHROPIC_API_KEY)
-
-@main.route('/health', methods=['GET'])
-def health_check():
-    return jsonify({'status': 'healthy'}), 200
 
 @main.route('/analyze-transcript', methods=['POST'])
 async def analyze_transcript():
@@ -38,7 +20,9 @@ async def analyze_transcript():
     
     Expected JSON payload:
     {
-        "transcript": "Text with timestamps and messages..."
+        "transcript": "New transcript segment",
+        "existing_summary": "Previous summary if any",
+        "full_transcript": "Complete meeting transcript history"
     }
     """
     try:
@@ -48,17 +32,22 @@ async def analyze_transcript():
                 'error': 'No transcript provided'
             }), 400
 
-        # Get the transcript text
-        transcript = data['transcript']
-        print("Received transcript:", transcript)  # Debug log
+        new_transcript = data['transcript']
+        existing_summary = data.get('existing_summary', '')
+        full_transcript = data.get('full_transcript', '')
+        
+        print(f"Received request to analyze transcript")
+        print(f"New segment length: {len(new_transcript)} characters")
+        print(f"Full transcript length: {len(full_transcript)} characters")
 
-        # Process transcript for summary update - pass transcript directly
+        # Pass both new segment and full transcript to agent
         updated_summary = meeting_agent.process_segment(
-            existing_summary='',  # Start fresh each time
-            new_transcript=transcript  # Pass the formatted transcript directly
+            existing_summary=existing_summary,
+            new_transcript=new_transcript,
+            full_transcript=full_transcript
         )
 
-        print("Updated summary:", updated_summary)  # Debug log
+        print(f"Generated summary length: {len(updated_summary)} characters")
         
         return jsonify({
             'status': 'success',
@@ -68,12 +57,11 @@ async def analyze_transcript():
         }), 200
     
     except Exception as e:
-        print("Error processing transcript:", str(e))  # Debug log
+        print("Error processing transcript:", str(e))
         return jsonify({
             'error': str(e),
             'status': 'error'
         }), 500
-
 
 @main.route('/demo-queries', methods=['GET'])
 async def demo_queries():
