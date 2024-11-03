@@ -123,3 +123,23 @@ async def demo_queries():
             'error': str(e),
             'status': 'error'
         }), 500
+    
+@main.route('/test-email', methods=['GET'])
+async def test_email():
+    """Simple test endpoint for Gmail integration"""
+    try:
+        transcript = "Can you find the email from Anwar?"
+        
+        analysis_results = await email_agent.analyze_transcript_segment(transcript)
+        
+        return jsonify({
+            'status': 'success',
+            'transcript': transcript,
+            'results': analysis_results
+        }), 200
+    
+    except Exception as e:
+        return jsonify({
+            'error': str(e),
+            'status': 'error'
+        }), 500

@@ -76,21 +76,10 @@ class MeetingAnalysisAgent:
         response = self.agent.chat(prompt)
         return response.response
 class EmailQueryAgent:
-    """Agent specifically designed for generating email queries from transcripts"""
-    """Agent specifically designed for generating email queries from transcripts"""
-    
     def __init__(self, llm_provider: str = "openai", api_key: Optional[str] = None):
-        """
-        Initialize the email query agent
-        
-        Args:
-            llm_provider: "openai" or "anthropic"
-            api_key: Optional API key (will use environment variable if not provided)
-        """
+        """Initialize email query agent"""
         self.llm = self._initialize_llm(llm_provider, api_key)
-        self.query_generator = EmailQueryGenerator()
         self.email_service = EmailService()
-        self.context_provider = ContextProvider()
         self.agent = self._initialize_agent()
 
     def _initialize_llm(self, provider: str, api_key: Optional[str] = None) -> LLM:
@@ -116,132 +105,53 @@ class EmailQueryAgent:
             raise ValueError(f"Unsupported LLM provider: {provider}")
 
     def _initialize_agent(self) -> FunctionCallingAgent:
-        """Initialize the function calling agent with email-specific system prompt"""
+        """Initialize the agent with email search prompts"""
         prefix_messages = [
             ChatMessage(
                 role="system",
                 content=(
-                    "You are an AI assistant specialized in analyzing meeting transcripts "
-                    "to identify and generate relevant email search queries. Your task is "
-                    "to extract email references and return them in a structured format.\n\n"
-                    
-                    "You will receive:\n"
-                    "1. Current date context\n"
-                    "2. A transcript segment\n\n"
-                    
-                    "When analyzing transcripts, focus on:\n"
-                    "- Explicit mentions of emails ('that email from John')\n"
-                    "- Time references ('sent last week', 'from yesterday')\n"
-                    "- Subject matter ('about the Q4 review')\n"
-                    "- Sender/recipient information ('from Sarah to the team')\n"
-                    "- Attachment mentions ('with the PDF attached')\n\n"
-                    
-                    "Return the analysis as a structured JSON object with:\n"
-                    "- sender: The email sender's name\n"
-                    "- recipients: List of recipients or teams\n"
-                    "- subject: Email subject or topic\n"
-                    "- date_range: Dictionary with 'after' and 'before' dates\n"
-                    "- attachment_type: File extension or type if mentioned\n"
+                    "You are an AI assistant that helps find emails by creating Gmail search queries. "
+                    "Given a conversation snippet, create a simple Gmail query. "
+                    "\n\nRules:"
+                    "\n- If someone mentions an email from a person, use 'from:person'"
+                    "\n- If they mention a subject, add 'subject:topic'"
+                    "\n- Keep queries simple and direct"
+                    "\n- Return ONLY the query string, no other text"
                 )
-            )
-        ]
-
-        tools = [
-            FunctionTool.from_defaults(
-                fn=self._generate_email_queries,
-                name="generate_email_queries",
-                description="Generate Gmail search queries from structured email data"
-            ),
-            FunctionTool.from_defaults(
-                fn=self._extract_date_context,
-                name="extract_date_context",
-                description="Extract and standardize date references using current context"
             )
         ]
         
         return FunctionCallingAgent.from_tools(
-            tools=tools,
+            tools=[],
             llm=self.llm,
             verbose=True,
             prefix_messages=prefix_messages
         )
 
-    def _generate_email_queries(self, analysis_result: Dict) -> Dict[str, List[str]]:
-        """Generate Gmail search queries based on structured analysis"""
-        queries = self.query_generator.generate_queries(analysis_result)
-        return {
-            "context": "Email reference identified in transcript",
-            "queries": queries
-        }
-
-    def _extract_date_context(self, text: str) -> Dict[str, Optional[str]]:
-        """Extract date-related information from transcript"""
-        return self.context_provider.parse_date_reference(text)
-
-
     async def analyze_transcript_segment(self, transcript: str) -> Dict[str, Any]:
-        """Analyze a transcript segment and generate email queries"""
-        
-        # Get current context
-        context = self.context_provider.get_current_context()
-        
-        prompt = (
-            f"Current date context:\n"
-            f"- Today: {context['current_date']} ({context['current_day']})\n"
-            f"- Yesterday: {context['yesterday']}\n"
-            f"- Last week started: {context['last_week']}\n\n"
-            f"Please analyze this transcript segment and return ONLY a JSON object with "
-            f"the following structure. No other text or explanation:\n\n"
-            "{\n"
-            '  "sender": "name",\n'
-            '  "recipients": ["list", "of", "recipients"],\n'
-            '  "subject": "subject line",\n'
-            '  "date_range": {"after": "YYYY/MM/DD", "before": "YYYY/MM/DD"},\n'
-            '  "attachment_type": "file extension"\n'
-            "}\n\n"
-            f"Transcript to analyze:\n{transcript}"
-        )
-
-        response = self.agent.chat(prompt)
-        
+        """Find relevant email from transcript segment"""
         try:
-            # Extract JSON from response
-            if isinstance(response.response, str):
-                # Find JSON pattern using regex
-                json_match = re.search(r'({[\s\S]*})', response.response)
-                if json_match:
-                    json_str = json_match.group(1)
-                    analysis_result = json.loads(json_str)
-                else:
-                    raise ValueError("No JSON object found in response")
-            else:
-                analysis_result = response.response
-
-            # Generate queries from the parsed result
-            queries = self.query_generator.generate_queries(analysis_result)
+            # Generate simple search query
+            response = self.agent.chat(transcript)
+            query = response.response.strip()
             
-            return {
-                "analysis": analysis_result,
-                "queries": queries,
-                "context": context,
-                "confidence": 0.8
-            }
+            # Search emails using query
+            results = await self.email_service.search_emails([query])
+            
+            if results and len(results) > 0:
+                return {
+                    'status': 'success',
+                    'query_used': query,
+                    'email_found': results[0]
+                }
+            else:
+                return {
+                    'status': 'no_results',
+                    'query_used': query
+                }
+                
         except Exception as e:
             return {
-                "error": f"Failed to generate queries: {str(e)}",
-                "raw_response": response.response,
-                "context": context,
-                "confidence": 0.5
+                'status': 'error',
+                'error': str(e)
             }
-
-    async def search_emails(self, queries: List[str]) -> List[Dict]:
-        """
-        Search emails using the generated queries
-        
-        Args:
-            queries: List of Gmail search queries
-            
-        Returns:
-            List of matching email metadata
-        """
-        return await self.email_service.search_emails(queries)

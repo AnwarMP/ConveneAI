@@ -17,3 +17,11 @@ class Config:
     
     # Anthropic specific settings
     ANTHROPIC_MODEL = "claude-3-5-sonnet-20241022"
+
+
+    # Email Configuration
+    # Add to Config class:
+    GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
+    GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
+    GOOGLE_CREDENTIALS_FILE = 'credentials.json'
+    GOOGLE_TOKEN_FILE = 'token.json'
