@@ -42,53 +42,46 @@ class EmailService:
 
         return build('gmail', 'v1', credentials=creds)
 
-    async def search_emails(self, queries: List[str]) -> List[Dict]:
-        """Search emails and return first result for each query"""
-        results = []
-        
-        for query in queries:
-            try:
-                # Search for messages
-                response = self.service.users().messages().list(
+    def search_emails(self, query: str) -> Dict:
+        """Search emails and return first result for the query"""
+        try:
+            # Search for messages
+            response = self.service.users().messages().list(
+                userId='me',
+                q=query,
+                maxResults=1  # Just get the first match
+            ).execute()
+            
+            if 'messages' in response:
+                # Get the first message's details
+                msg_id = response['messages'][0]['id']
+                msg = self.service.users().messages().get(
                     userId='me',
-                    q=query,
-                    maxResults=1  # Just get the first match
+                    id=msg_id,
+                    format='metadata',
+                    metadataHeaders=['subject', 'from', 'date']
                 ).execute()
                 
-                if 'messages' in response:
-                    # Get the first message's details
-                    msg_id = response['messages'][0]['id']
-                    msg = self.service.users().messages().get(
-                        userId='me',
-                        id=msg_id,
-                        format='metadata',
-                        metadataHeaders=['subject', 'from', 'date']
-                    ).execute()
-                    
-                    # Extract headers
-                    headers = msg['payload']['headers']
-                    subject = next(
-                        (h['value'] for h in headers if h['name'].lower() == 'subject'),
-                        '(no subject)'
-                    )
-                    sender = next(
-                        (h['value'] for h in headers if h['name'].lower() == 'from'),
-                        '(no sender)'
-                    )
-                    
-                    # Create result
-                    result = {
-                        'id': msg_id,
-                        'subject': subject,
-                        'from': sender,
-                        'url': f"https://mail.google.com/mail/u/0/#inbox/{msg_id}",
-                        'query_used': query
-                    }
-                    
-                    results.append(result)
-                    
-            except Exception as e:
-                print(f"Error searching emails: {e}")
-                continue
+                # Extract headers
+                headers = msg['payload']['headers']
+                subject = next(
+                    (h['value'] for h in headers if h['name'].lower() == 'subject'),
+                    '(no subject)'
+                )
+                sender = next(
+                    (h['value'] for h in headers if h['name'].lower() == 'from'),
+                    '(no sender)'
+                )
                 
-        return results
+                # Create result
+                return {
+                    'id': msg_id,
+                    'subject': subject,
+                    'from': sender,
+                    'url': f"https://mail.google.com/mail/u/0/#inbox/{msg_id}",
+                    'query_used': query
+                }
+                
+        except Exception as e:
+            print(f"Error searching emails: {e}")
+            return None

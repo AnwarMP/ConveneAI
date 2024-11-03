@@ -11,8 +11,12 @@ from src.services.email_service import EmailService
 import json
 import re
 from typing import Dict, Any
-
 from src.utils import *
+import google.generativeai as genai
+from google.generativeai import caching
+import datetime
+import time
+
 
 # Define a simple dummy function
 def noop_function():
@@ -26,18 +30,33 @@ dummy_tool = FunctionTool.from_defaults(
 )
 
 class MeetingAnalysisAgent:
-    def __init__(self, api_key: Optional[str] = None):
+    def __init__(self, llm_provider: str = "openai", api_key: Optional[str] = None):
         """Initialize the meeting analysis agent"""
-        self.api_key = api_key or os.getenv("ANTHROPIC_API_KEY")
-        if not self.api_key:    
-            raise ValueError("Anthropic API key must be provided")
-
-        self.llm = Anthropic(
-            model="claude-3-5-sonnet-20241022",
-            api_key=self.api_key
-        )
-        
+        self.llm = self._initialize_llm(llm_provider, api_key)
+        self.email_service = EmailService()
         self.agent = self._initialize_agent()
+
+    def _initialize_llm(self, provider: str, api_key: Optional[str] = None) -> LLM:
+        """Initialize the chosen LLM provider"""
+        if provider == "openai":
+            api_key = api_key or os.getenv("OPENAI_API_KEY")
+            if not api_key:
+                raise ValueError("OpenAI API key must be provided")
+            return OpenAI(
+                model="gpt-4",
+                api_key=api_key,
+                temperature=0.1
+            )
+        elif provider == "anthropic":
+            api_key = api_key or os.getenv("ANTHROPIC_API_KEY")
+            if not api_key:
+                raise ValueError("Anthropic API key must be provided")
+            return Anthropic(
+                model="claude-3-5-sonnet-20241022",
+                api_key=api_key
+            )
+        else:
+            raise ValueError(f"Unsupported LLM provider: {provider}")
 
     def _initialize_agent(self) -> FunctionCallingAgent:
         """Initialize the function calling agent with system prompt"""
@@ -105,8 +124,13 @@ class MeetingAnalysisAgent:
             )
         ]
         
+        search_email_tool = FunctionTool.from_defaults(
+            fn=self.email_service.search_emails,
+            description="Search for an email using a Gmail query string. Returns the first matching email's details."
+        )
+        
         return FunctionCallingAgent.from_tools(
-            tools=[dummy_tool],
+            tools=[search_email_tool],
             llm=self.llm,
             verbose=True,
             prefix_messages=prefix_messages
@@ -142,83 +166,73 @@ class MeetingAnalysisAgent:
 
         response = self.agent.chat(prompt)
         return response.response
-class EmailQueryAgent:
-    def __init__(self, llm_provider: str = "openai", api_key: Optional[str] = None):
-        """Initialize email query agent"""
-        self.llm = self._initialize_llm(llm_provider, api_key)
-        self.email_service = EmailService()
-        self.agent = self._initialize_agent()
 
-    def _initialize_llm(self, provider: str, api_key: Optional[str] = None) -> LLM:
-        """Initialize the chosen LLM provider"""
-        if provider == "openai":
-            api_key = api_key or os.getenv("OPENAI_API_KEY")
-            if not api_key:
-                raise ValueError("OpenAI API key must be provided")
-            return OpenAI(
-                model="gpt-4o-mini",
-                api_key=api_key,
-                temperature=0.1
-            )
-        elif provider == "anthropic":
-            api_key = api_key or os.getenv("ANTHROPIC_API_KEY")
-            if not api_key:
-                raise ValueError("Anthropic API key must be provided")
-            return Anthropic(
-                model="claude-3-5-sonnet-20241022",
-                api_key=api_key
-            )
-        else:
-            raise ValueError(f"Unsupported LLM provider: {provider}")
 
-    def _initialize_agent(self) -> FunctionCallingAgent:
-        """Initialize the agent with email search prompts"""
-        prefix_messages = [
-            ChatMessage(
-                role="system",
-                content=(
-                    "You are an AI assistant that helps find emails by creating Gmail search queries. "
-                    "Given a conversation snippet, create a simple Gmail query. "
-                    "\n\nRules:"
-                    "\n- If someone mentions an email from a person, use 'from:person'"
-                    "\n- If they mention a subject, add 'subject:topic'"
-                    "\n- Keep queries simple and direct"
-                    "\n- Return ONLY the query string, no other text"
-                )
-            )
-        ]
-        
-        return FunctionCallingAgent.from_tools(
-            tools=[],
-            llm=self.llm,
-            verbose=True,
-            prefix_messages=prefix_messages
+class GeminiAgent:
+    def __init__(self, api_key: Optional[str] = None):
+        """Initialize the Gemini agent"""
+        self.api_key = api_key or os.getenv("GOOGLE_API_KEY")
+        if not self.api_key:
+            raise ValueError("Google API key must be provided")
+        genai.configure(api_key=self.api_key)
+        self.model = None
+
+    def initialize_with_video(self, video_path: str) -> None:
+        """Initialize the model with video and cache it for 10 minutes"""
+        # Upload video file
+        video_file = genai.upload_file(path=video_path)
+
+        # Wait for processing
+        while video_file.state.name == 'PROCESSING':
+            print('Waiting for video to be processed...')
+            time.sleep(2)
+            video_file = genai.get_file(video_file.name)
+
+        print(f'Video processing complete: {video_file.uri}')
+
+        # Create cache with 10 minute TTL
+        cache = caching.CachedContent.create(
+            model='models/gemini-1.5-pro-latest',
+            display_name='meeting_video',
+            system_instruction="""You are an expert video analyzer, and your job is to answer 
+            the user's query based on the video file you have access to.""",
+            contents=[video_file],
+            ttl=datetime.timedelta(minutes=10)
         )
 
-    async def analyze_transcript_segment(self, transcript: str) -> Dict[str, Any]:
-        """Find relevant email from transcript segment"""
-        try:
-            # Generate simple search query
-            response = self.agent.chat(transcript)
-            query = response.response.strip()
-            
-            # Search emails using query
-            results = await self.email_service.search_emails([query])
-            
-            if results and len(results) > 0:
-                return {
-                    'status': 'success',
-                    'query_used': query,
-                    'email_found': results[0]
-                }
-            else:
-                return {
-                    'status': 'no_results',
-                    'query_used': query
-                }
-                
-        except Exception as e:
-            return {
-                'status': 'error',
-                'error': str(e)
-            }
+        self.model = genai.GenerativeModel.from_cached_content(cached_content=cache)
+
+    def analyze_transcript(self, transcript: str) -> str:
+        """Analyze transcript for correctness and add visual cues"""
+        if not self.model:
+            raise ValueError("Model not initialized with video")
+
+        prompt = f"""
+        I have a transcript for this video.
+        {transcript}
+
+        Go through the transcript and the timestamps. Make sure they are correct. 
+        If not, fix them. Also try detecting specific head and hand gestures, 
+        such as nodding and shaking and thumbs up and down, during a video-recorded meeting and add them 
+        to the transcript if detected.
+        """
+
+        response = self.model.generate_content(
+            prompt,
+            generation_config=genai.types.GenerationConfig(temperature=0.0)
+        )
+        
+        return response.text
+
+    def chat(self, prompt: str) -> str:
+        """Chat about the video using the cached model"""
+        if not self.model:
+            raise ValueError("Model not initialized with video")
+
+        response = self.model.generate_content(
+            prompt,
+            generation_config=genai.types.GenerationConfig(temperature=0.0)
+        )
+        
+        return response.text
+    
