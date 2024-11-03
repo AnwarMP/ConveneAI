@@ -3,11 +3,9 @@ import Nav from '../components/Nav';
 import Chat from '../components/Chat';
 import '../styles/summary.css';
 import TranscriptViewer from '../components/TranscriptViewer';
-import { useNotes } from '../context/NotesContext';
+import Notes from '../components/Notes'; // Import the Notes component
 
 export const Summary = () => {
-  const { notes } = useNotes();
-
   return (
     <div>
       <Nav />
@@ -23,16 +21,8 @@ export const Summary = () => {
             </div>
           </div>
 
-          <div className="notes">
-            <h2>Meeting Notes</h2>
-            <div className="notes-content">
-              <ul>
-                {notes.map((note, index) => (
-                  <li key={index}>{note}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
+          {/* Reuse the Notes component to match the Meeting.js UI */}
+          <Notes />
         </div>
 
         <div className="right-section">
