@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import DailyIframe from '@daily-co/daily-js';
 import { useNotes } from '../context/NotesContext';
+import { useNavigate } from 'react-router-dom';
 
 const VideoCall = ({ url }) => {
   const videoContainerRef = useRef(null);
@@ -9,6 +10,8 @@ const VideoCall = ({ url }) => {
   const { addNote } = useNotes();
   const currentSummaryRef = useRef('');
   const fullTranscriptRef = useRef('');
+  const [meetingLeft, setMeetingLeft] = useState(false);
+  const navigate = useNavigate();
 
   const logWithTimestamp = (message, data = null) => {
     const timestamp = new Date().toISOString();
@@ -105,6 +108,12 @@ const VideoCall = ({ url }) => {
       callFrameRef.current.on('error', (error) => {
         logWithTimestamp('Daily.co error:', error);
       });
+
+      //Listener for when you leave the meeting
+      callFrameRef.current.on('left-meeting', (event) => {
+        logWithTimestamp('Left meeting:', event);
+        setMeetingLeft(true);
+      });
     }
 
     return () => {
@@ -117,7 +126,43 @@ const VideoCall = ({ url }) => {
     };
   }, [url]);
 
-  return <div ref={videoContainerRef} style={{ width: '100%', height: '100%' }} />;
+  useEffect(() => {
+    if (meetingLeft) {
+      const timer = setTimeout(() => {
+        navigate('/summary');
+      }, 10000); // Wait for 10 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [meetingLeft, navigate]);
+
+  const spinnerStyle = `
+  .loading-circle {
+    margin: 10px auto;
+    border: 16px solid #f3f3f3;
+    border-top: 16px solid #3498db;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+`;
+
+  return (    
+  <>
+    {meetingLeft ? (
+      <div style={{ textAlign: 'center', marginTop: '50px' }}>
+        <style>{spinnerStyle}</style>
+        <div className="loading-circle"></div>
+        <p>Moving to meeting summary...</p>
+      </div>
+    ) : (
+      <div ref={videoContainerRef} style={{ width: '100%', height: '100%' }} />
+    )}
+  </>);
 };
 
 export default VideoCall;
