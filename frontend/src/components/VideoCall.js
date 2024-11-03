@@ -20,9 +20,14 @@ const VideoCall = ({ url }) => {
         },
       });
 
+      // Meeting token to make you owner of meeting -> need to enable transcription
+      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvIjp0cnVlLCJkIjoiNmI2YWQzMzYtNjZhMS00NDk2LWI3NWItMTQ5YTk1NGE5ZjAwIiwiaWF0IjoxNzMwNjAyMTU2fQ.2LAsgzL82X1JfxvDOGiLsajaERRCGWkSjtKX3u66NLc';
       // Join the call without starting recording
-      callFrameRef.current.join({ url }).then(() => {
+      callFrameRef.current.join({ url, token }).then(() => {
         console.log("Joined the call");
+        //Start transcription immediately when you join meeting
+        callFrameRef.current.startTranscription();
+        console.log("Started the transcript");
       });
 
       // Listen for recording events
@@ -39,6 +44,11 @@ const VideoCall = ({ url }) => {
           console.log("Recording available at:", recordingUrl);
           // Optionally, handle the recording URL as needed
         }
+      });
+
+      // Add app-message event listener
+      callFrameRef.current.on('app-message', (message) => {
+        console.log("App message received:", message);
       });
     }
 
