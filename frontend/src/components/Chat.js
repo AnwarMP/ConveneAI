@@ -1,4 +1,3 @@
-// src/components/Chat.js
 import React, { useState } from 'react';
 
 const Chat = () => {
@@ -24,7 +23,7 @@ const Chat = () => {
       <div className="chat-history">
         {chatHistory.map((chat, index) => (
           <div key={index} className={`chat-bubble ${chat.sender}`}>
-            <strong>{chat.sender === 'user' ? 'You' : 'AI'}:</strong> {chat.message}
+            {chat.message}
           </div>
         ))}
       </div>
@@ -33,9 +32,10 @@ const Chat = () => {
           type="text"
           value={userMessage}
           onChange={(e) => setUserMessage(e.target.value)}
-          placeholder="Type a message..."
+          placeholder="Type your message..."
           className="chat-input"
         />
+        <button type="submit" className="chat-send-button">Send</button>
       </form>
     </div>
   );
