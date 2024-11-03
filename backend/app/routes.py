@@ -7,7 +7,8 @@ main = Blueprint('main', __name__)
 
 
 # Initialize the MeetingAnalysisAgent (single instance)
-meeting_agent = MeetingAnalysisAgent(api_key=Config.ANTHROPIC_API_KEY)
+meeting_agent = MeetingAnalysisAgent(llm_provider="anthropic", api_key=Config.ANTHROPIC_API_KEY)
+# meeting_agent = MeetingAnalysisAgent(llm_provider="openai", api_key=Config.OPENAI_API_KEY)
 
 @main.route('/analyze-transcript', methods=['POST'])
 async def analyze_transcript():

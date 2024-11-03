@@ -14,94 +14,47 @@ const logWithTimestamp = (message, data = null) => {
 
 export const NotesProvider = ({ children }) => {
   const [notes, setNotes] = useState([]);
-  const [animationKeys, setAnimationKeys] = useState([]);
-  const updateCountRef = React.useRef(0);
+  const [latestNote, setLatestNote] = useState('');
 
   const addNote = useCallback((note) => {
     logWithTimestamp('Adding new note', {
       notePreview: note.substring(0, 50) + (note.length > 50 ? '...' : ''),
-      currentNotesCount: notes.length
     });
 
-    setNotes(prev => {
-      const newNotes = [...prev, note];
-      logWithTimestamp('Notes array updated', {
-        previousCount: prev.length,
-        newCount: newNotes.length
-      });
-      return newNotes;
-    });
-
-    setAnimationKeys(prev => {
-      const newKeys = [...prev, Date.now()];
-      logWithTimestamp('Animation keys updated', {
-        keyCount: newKeys.length,
-        latestKey: newKeys[newKeys.length - 1]
-      });
-      return newKeys;
-    });
-  }, [notes.length]);
+    // Update both the notes array and latest note
+    setNotes(prev => [...prev, note]);
+    setLatestNote(note);
+  }, []);
 
   const updateNote = useCallback((updatedNote) => {
-    updateCountRef.current += 1;
-    logWithTimestamp(`Updating note (update #${updateCountRef.current})`, {
+    logWithTimestamp('Updating note', {
       notePreview: updatedNote.substring(0, 50) + (updatedNote.length > 50 ? '...' : '')
     });
 
     setNotes(prev => {
-      if (prev.length === 0) {
-        logWithTimestamp('No existing notes, adding as first note');
-        return [updatedNote];
-      }
-      
-      const previousNote = prev[prev.length - 1];
       const newNotes = [...prev];
-      newNotes[newNotes.length - 1] = updatedNote;
-      
-      logWithTimestamp('Note update comparison', {
-        previousLength: previousNote.length,
-        newLength: updatedNote.length,
-        changeInChars: updatedNote.length - previousNote.length
-      });
-      
+      // Replace last note with updated one
+      if (newNotes.length > 0) {
+        newNotes[newNotes.length - 1] = updatedNote;
+      } else {
+        newNotes.push(updatedNote);
+      }
       return newNotes;
     });
-
-    setAnimationKeys(prev => {
-      const newKeys = [...prev];
-      const newKey = Date.now();
-      newKeys[newKeys.length - 1] = newKey;
-      logWithTimestamp('Animation key updated', {
-        keyIndex: newKeys.length - 1,
-        newKey: newKey
-      });
-      return newKeys;
-    });
+    
+    // Update latest note to trigger rerender
+    setLatestNote(updatedNote);
   }, []);
 
   const clearNotes = useCallback(() => {
-    logWithTimestamp('Clearing all notes', {
-      notesCleared: notes.length,
-      animationKeysCleared: animationKeys.length
-    });
-    
+    logWithTimestamp('Clearing all notes');
     setNotes([]);
-    setAnimationKeys([]);
-    updateCountRef.current = 0;
-  }, [notes.length, animationKeys.length]);
-
-  // Log state changes
-  React.useEffect(() => {
-    logWithTimestamp('Notes state changed', {
-      totalNotes: notes.length,
-      totalAnimationKeys: animationKeys.length,
-      totalUpdates: updateCountRef.current
-    });
-  }, [notes, animationKeys]);
+    setLatestNote('');
+  }, []);
 
   const contextValue = {
     notes,
-    animationKeys,
+    latestNote,
     addNote,
     updateNote,
     clearNotes,

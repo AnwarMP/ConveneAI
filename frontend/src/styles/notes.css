@@ -3,27 +3,54 @@
     padding: 20px;
     height: 100%;
     overflow-y: auto;
-}
-
-/* Static style for Notes */
-.static-notes {
+    background-color: #fdfdfd;
+  }
+  
+  .notes-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 1.5rem;
+  }
+  
+  .notes-content {
     font-family: 'Georgia', serif;
     color: #333;
     font-size: 16px;
     line-height: 1.6;
-    padding: 10px;
-    /* border-left: 4px solid #ddd; */ /* Remove this line */
-    margin-bottom: 20px;
-    transition: color 0.3s ease;
-}
-
-
-/* Fade-in animation */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-.fade-in {
-    animation: fadeIn 1s ease-in-out;
-}
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  .note {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+  }
+  
+  .note.typing {
+    border-right: 2px solid #333;
+    animation: blink-caret 0.75s step-end infinite;
+  }
+  
+  @keyframes blink-caret {
+    from, to { border-color: transparent }
+    50% { border-color: #333 }
+  }
+  
+  /* Markdown content styling */
+  .note h1, .note h2, .note h3 {
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    font-weight: 600;
+  }
+  
+  .note ul, .note ol {
+    margin-left: 1.5em;
+    margin-bottom: 1em;
+  }
+  
+  .note p {
+    margin-bottom: 1em;
+  }

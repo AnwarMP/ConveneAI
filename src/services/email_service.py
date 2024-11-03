@@ -78,7 +78,8 @@ class EmailService:
                     'id': msg_id,
                     'subject': subject,
                     'from': sender,
-                    'url': f"https://mail.google.com/mail/u/0/#inbox/{msg_id}",
+                    # 'url': f"https://mail.google.com/mail/u/0/#inbox/{msg_id}",
+                    'markdown_url': f"[{subject}](https://mail.google.com/mail/u/0/#inbox/{msg_id}",
                     'query_used': query
                 }
                 

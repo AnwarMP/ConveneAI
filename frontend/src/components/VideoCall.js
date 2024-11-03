@@ -89,8 +89,8 @@ const VideoCall = ({ url }) => {
           const updatedBuffer = [...prevBuffer, message.data];
           logWithTimestamp('Current buffer size:', updatedBuffer.length);
           
-          if (updatedBuffer.length >= 10) {
-            logWithTimestamp('Buffer full (10 messages), processing transcript');
+          if (updatedBuffer.length >= 5) {
+            logWithTimestamp('Buffer full (5 messages), processing transcript');
             const formattedTranscript = updatedBuffer
               .map((msg) => `[${msg.timestamp}] ${msg.user_name || ""}: ${msg.text}`)
               .join('\n');
