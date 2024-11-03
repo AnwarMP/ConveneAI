@@ -1,21 +1,21 @@
 // src/App.js
 import React from 'react';
-import VideoCall from './components/VideoCall';
-import Notes from './components/Notes';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Landing } from "./pages/landing";
+import { Meeting } from "./pages/meeting";
+import { Summary } from "./pages/summary";
+
 import './App.css';
 
 const App = () => {
-  const dailyUrl = 'https://conveneai.daily.co/conveneAI';
-
   return (
-    <div className="app-container">
-      <div className="video-section">
-        <VideoCall url={dailyUrl} />
-      </div>
-      <div className="notes-section">
-        <Notes />
-      </div>
-    </div>
+    <Router>
+      <Routes>
+        <Route exact path="/" element={<Landing />} />
+        <Route exact path="/meeting" element={<Meeting />} />
+        <Route exact path="/summary" element={<Summary />} />
+      </Routes>
+    </Router>
   );
 };
 
