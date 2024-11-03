@@ -104,6 +104,7 @@ class MeetingAnalysisAgent:
                     "REFERENCED EMAILS (Only if emails were mentioned)\n"
                     "- When emails are mentioned, use search_email tool to find and include details\n"
                     "- Include relevant context from found emails\n\n"
+                    "- Include the link to the email in the summary\n\n"
                     
                     "Writing Guidelines:\n"
                     "1. Be concise and direct\n"
@@ -148,23 +149,32 @@ class MeetingAnalysisAgent:
             new_transcript: New transcript segment to analyze
             full_transcript: Complete transcript history
         """
-        prompt = (
-            "Based on the following meeting information, create or update a professional meeting summary.\n\n"
+        prompt = """
+            Based on the following meeting information, create or update a professional meeting summary.
+
+            Previous Summary:
+            {existing_summary_text}
+
+            Meeting History:
+            {full_transcript_text}
+
+            New Discussion:
+            {new_transcript_text}
+
+            Requirements:
+            1. If this is a new meeting, include a complete Meeting Overview section
+            2. If updating, maintain the existing structure while incorporating new information
+            3. Highlight any significant changes or developments
+            4. Ensure all action items have clear ownership
+            5. Keep the summary professional and actionable
+            6. Remove any redundant or outdated information
+            7. Be concise and direct
             
-            f"Previous Summary:\n{existing_summary or 'No previous summary.'}\n\n"
-            
-            f"Meeting History:\n{full_transcript or 'No previous transcript.'}\n\n"
-            
-            f"New Discussion:\n{new_transcript}\n\n"
-            
-            "Requirements:\n"
-            "1. If this is a new meeting, include a complete Meeting Overview section\n"
-            "2. If updating, maintain the existing structure while incorporating new information\n"
-            "3. Highlight any significant changes or developments\n"
-            "4. Ensure all action items have clear ownership\n"
-            "5. Keep the summary professional and actionable\n"
-            "6. Remove any redundant or outdated information\n"
-            "7. Be concise and direct\n"
+            Just give me the updated summary in format mentioned above. No need to explain. Insert a new line between sections.
+        """.format(
+            existing_summary_text=existing_summary or 'No previous summary.',
+            full_transcript_text=full_transcript or 'No previous transcript.',
+            new_transcript_text=new_transcript
         )
 
         response = self.agent.chat(prompt)
