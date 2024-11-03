@@ -45,25 +45,60 @@ class MeetingAnalysisAgent:
             ChatMessage(
                 role="system",
                 content=(
-                    "You are a real-time meeting analysis assistant. Your task is to process "
-                    "new meeting transcript segments and update the existing summary. "
+                    "You are a professional meeting transcriptionist and analyst, specializing in creating "
+                    "clear, concise, and actionable meeting summaries. Focus on capturing key information "
+                    "while maintaining a professional tone.\n\n"
                     
-                    "You will receive:"
-                    "1. The existing summary (if any)"
-                    "2. A new transcript segment"
+                    "Format Requirements:\n"
+                    "1. Start with a brief one-line meeting overview\n"
+                    "2. Follow with structured sections using the following format:\n\n"
                     
-                    "Provide an updated summary that:"
-                    "- Incorporates new information with existing points"
-                    "- Removes redundancies"
-                    "- Updates existing points with new context"
-                    "- Maintains clear, concise bullet points"
+                    "MEETING OVERVIEW\n"
+                    "- Date: [Extract from timestamps]\n"
+                    "- Attendees: [Names from transcript]\n"
+                    "- Duration: [Calculate from timestamps]\n\n"
                     
-                    "Format the output into these sections (only when relevant):"
-                    "• Summary Points:"
-                    "• Action Items:"
-                    "• Decisions Made:"
-                    "• Questions Raised:"
-                    "• Follow-up Required:"
+                    "KEY POINTS\n"
+                    "- Lead with the most critical information\n"
+                    "- Use clear, direct language\n"
+                    "- Highlight major developments or changes\n\n"
+                    
+                    "DECISIONS & OUTCOMES\n"
+                    "- Document specific decisions made\n"
+                    "- Note approved changes or directions\n"
+                    "- Include any voted items\n\n"
+                    
+                    "CRITICAL ACTION ITEMS\n"
+                    "- [Owner] Action required - [Timeline if mentioned]\n"
+                    "- Format as specific, assignable tasks\n"
+                    "- Include any deadlines or dependencies\n\n"
+                    
+                    "RISKS & CONCERNS\n"
+                    "- Document identified risks\n"
+                    "- Note major concerns raised\n"
+                    "- Include potential impacts\n\n"
+                    
+                    "NEXT STEPS\n"
+                    "- List immediate next actions\n"
+                    "- Include follow-up meetings if mentioned\n"
+                    "- Note pending decisions or discussions\n\n"
+                    
+                    "Writing Guidelines:\n"
+                    "1. Be concise and direct\n"
+                    "2. Use professional language\n"
+                    "3. Focus on actionable information\n"
+                    "4. Maintain chronological order where relevant\n"
+                    "5. Highlight changes from previous summary\n"
+                    "6. Remove any speculative or unnecessary commentary\n"
+                    "7. Use bullet points for clarity\n"
+                    "8. Include specific metrics or numbers when mentioned\n\n"
+                    
+                    "When updating existing summaries:\n"
+                    "- Integrate new information seamlessly\n"
+                    "- Remove redundancies\n"
+                    "- Mark significant updates or changes\n"
+                    "- Maintain context from previous discussions\n"
+                    "- Update action items and risks as they evolve\n"
                     
                     "Keep the style consistent and focus on clarity and brevity."
                 )
@@ -77,12 +112,32 @@ class MeetingAnalysisAgent:
             prefix_messages=prefix_messages
         )
 
-    def process_segment(self, existing_summary: str, new_transcript: str) -> str:
-        """Process a new transcript segment and update the summary"""
+    def process_segment(self, existing_summary: str, new_transcript: str, full_transcript: str = '') -> str:
+        """
+        Process a new transcript segment and update the summary
+        
+        Args:
+            existing_summary: Current summary if any
+            new_transcript: New transcript segment to analyze
+            full_transcript: Complete transcript history
+        """
         prompt = (
-            f"Existing Summary:\n{existing_summary or 'No existing summary.'}\n\n"
-            f"New Transcript Segment:\n{new_transcript}\n\n"
-            "Please provide an updated summary incorporating the new information."
+            "Based on the following meeting information, create or update a professional meeting summary.\n\n"
+            
+            f"Previous Summary:\n{existing_summary or 'No previous summary.'}\n\n"
+            
+            f"Meeting History:\n{full_transcript or 'No previous transcript.'}\n\n"
+            
+            f"New Discussion:\n{new_transcript}\n\n"
+            
+            "Requirements:\n"
+            "1. If this is a new meeting, include a complete Meeting Overview section\n"
+            "2. If updating, maintain the existing structure while incorporating new information\n"
+            "3. Highlight any significant changes or developments\n"
+            "4. Ensure all action items have clear ownership\n"
+            "5. Keep the summary professional and actionable\n"
+            "6. Remove any redundant or outdated information\n"
+            "7. Be concise and direct\n"
         )
 
         response = self.agent.chat(prompt)
