@@ -4,7 +4,7 @@ import VideoCall from './components/VideoCall';
 import './App.css';
 
 const App = () => {
-  const dailyUrl = 'https://xuanwill.daily.co/eJkmkQn5KmAjUSg07HHa'; 
+  const dailyUrl = 'https://conveneai.daily.co/conveneAI'; 
   return (
     <div className="app-container">
       <div className="video-section">
