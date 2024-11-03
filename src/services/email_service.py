@@ -42,7 +42,7 @@ class EmailService:
 
         return build('gmail', 'v1', credentials=creds)
 
-    def search_emails(self, query: str) -> Dict:
+    def searchmails(self, query: str) -> Dict:
         """Search emails and return first result for the query"""
         try:
             # Search for messages
@@ -85,4 +85,47 @@ class EmailService:
                 
         except Exception as e:
             print(f"Error searching emails: {e}")
+            return None
+        
+
+    def search_emails(self, query: str) -> Dict:
+        """Retrieve the most recent email in the user's inbox"""
+        try:
+            # Search for the most recent message
+            response = self.service.users().messages().list(
+                userId='me',
+                maxResults=1  # Get only the most recent email
+            ).execute()
+            
+            if 'messages' in response:
+                # Get the first (most recent) message's details
+                msg_id = response['messages'][0]['id']
+                msg = self.service.users().messages().get(
+                    userId='me',
+                    id=msg_id,
+                    format='metadata',
+                    metadataHeaders=['subject', 'from', 'date']
+                ).execute()
+                
+                # Extract headers
+                headers = msg['payload']['headers']
+                subject = next(
+                    (h['value'] for h in headers if h['name'].lower() == 'subject'),
+                    '(no subject)'
+                )
+                sender = next(
+                    (h['value'] for h in headers if h['name'].lower() == 'from'),
+                    '(no sender)'
+                )
+                
+                # Create result
+                return {
+                    'id': msg_id,
+                    'subject': subject,
+                    'from': sender,
+                    'markdown_url': f"[{subject}](https://mail.google.com/mail/u/0/#inbox/{msg_id})",
+                }
+                
+        except Exception as e:
+            print(f"Error retrieving most recent email: {e}")
             return None

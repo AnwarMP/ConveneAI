@@ -4,19 +4,33 @@ const Chat = () => {
   const [chatHistory, setChatHistory] = useState([]);
   const [userMessage, setUserMessage] = useState('');
 
-  const handleChatSubmit = (e) => {
+  const handleChatSubmit = async (e) => {
     e.preventDefault();
     if (userMessage.trim()) {
       setChatHistory((prevHistory) => [...prevHistory, { sender: 'user', message: userMessage }]);
-      setUserMessage('');
-
-      // Simulate an AI response after a delay
-      setTimeout(() => {
-        const aiResponse = "AI Response based on transcript and notes.";
-        setChatHistory((prevHistory) => [...prevHistory, { sender: 'ai', message: aiResponse }]);
-      }, 1000);
+      const response = await fetch("http://localhost:5000/chat-gemini", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: userMessage,
+          chat_history: chatHistory.map(chat => chat.message).join("\n"),
+        }),
+      });
+      const data = await response.json();
+      if (data && data.status === "success") {
+        setChatHistory((prevHistory) => [
+          ...prevHistory,
+          { sender: 'ai', message: data.results.response },
+        ]);
+      } else {
+        console.error("Error:", data.error);
+      }
+      setUserMessage("");
     }
   };
+  
 
   return (
     <div className="chat-container">

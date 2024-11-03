@@ -62,6 +62,26 @@ async def analyze_transcript():
             'error': str(e),
             'status': 'error'
         }), 500
+    
+@main.route('/transcript-gemini', methods=['POST'])
+async def transcript_gemini():
+    try:
+        # Enhance transcript with Gemini
+        enhanced_transcript = gemini_agent.transcript
+
+        return jsonify({
+            'status': 'success',
+            'results': {
+                'enhanced_transcript': enhanced_transcript
+            }
+        }), 200
+
+    except Exception as e:
+        print("Error processing with Gemini:", str(e))
+        return jsonify({
+            'error': str(e),
+            'status': 'error'
+        }), 500
 
 @main.route('/call-gemini', methods=['POST'])
 async def call_gemini():
@@ -98,7 +118,7 @@ async def call_gemini():
         print(f"Generated enhanced transcript length: {len(enhanced_transcript)} characters")
 
         return jsonify({
-            'st tus': 'success',
+            'status': 'success',
             'results': {
                 'enhanced_transcript': enhanced_transcript
             }

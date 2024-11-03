@@ -40,18 +40,29 @@ const VideoCall = ({ url }) => {
         }),
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
-      logWithTimestamp('Received response from backend:', data);
+      logWithTimestamp('Received response from analysis:', data);
       
-      if (data?.results?.summary) {
+      if (data?.status === 'success' && data.results?.summary) {
         currentSummaryRef.current = data.results.summary;
         // Append new transcript to full history
         fullTranscriptRef.current = fullTranscriptRef.current 
           ? `${fullTranscriptRef.current}\n${newTranscript}`
           : newTranscript;
+
+        // Save both raw transcript and current summary
+        localStorage.setItem('raw_transcript', fullTranscriptRef.current);
+        localStorage.setItem('meeting_summary', currentSummaryRef.current);
+        localStorage.setItem('meeting_date', new Date().toISOString());
         
         logWithTimestamp('Adding new note to context:', data.results.summary);
         addNote(data.results.summary);
+      } else {
+        throw new Error('Invalid response format from server');
       }
     } catch (error) {
       logWithTimestamp('Error sending transcript:', error);
@@ -109,7 +120,6 @@ const VideoCall = ({ url }) => {
         logWithTimestamp('Daily.co error:', error);
       });
 
-      //Listener for when you leave the meeting
       callFrameRef.current.on('left-meeting', (event) => {
         logWithTimestamp('Left meeting:', event);
         setMeetingLeft(true);
@@ -126,43 +136,65 @@ const VideoCall = ({ url }) => {
     };
   }, [url]);
 
+  // Handle meeting end
   useEffect(() => {
     if (meetingLeft) {
-      const timer = setTimeout(() => {
-        navigate('/summary');
-      }, 10000); // Wait for 10 seconds
-      return () => clearTimeout(timer);
-    }
-  }, [meetingLeft, navigate]);
+      const finalizeMeeting = async () => {
+        try {
+          // // Process any remaining transcript
+          // if (transcriptBuffer.length > 5) {
+          //   logWithTimestamp('Processing final transcript buffer');
+          //   const finalTranscript = transcriptBuffer
+          //     .map((msg) => `[${msg.timestamp}] ${msg.user_name || ""}: ${msg.text}`)
+          //     .join('\n');
+          //   await sendTranscriptToBackend(finalTranscript);
+          // }
 
-  const spinnerStyle = `
-  .loading-circle {
-    margin: 10px auto;
-    border: 16px solid #f3f3f3;
-    border-top: 16px solid #3498db;
-    border-radius: 50%;
-    width: 120px;
-    height: 120px;
-    animation: spin 2s linear infinite;
-  }
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-`;
+          // Small delay to ensure storage is complete
+          setTimeout(() => {
+            logWithTimestamp('Navigating to summary page');
+            navigate('/summary');
+          }, 6000);
+          
+        } catch (error) {
+          logWithTimestamp('Error in meeting finalization:', error);
+          navigate('/summary'); // Navigate anyway
+        }
+      };
+
+      finalizeMeeting();
+    }
+  }, [meetingLeft, transcriptBuffer, navigate]);
 
   return (    
-  <>
-    {meetingLeft ? (
-      <div style={{ textAlign: 'center', marginTop: '50px' }}>
-        <style>{spinnerStyle}</style>
-        <div className="loading-circle"></div>
-        <p>Moving to meeting summary...</p>
-      </div>
-    ) : (
-      <div ref={videoContainerRef} style={{ width: '100%', height: '100%' }} />
-    )}
-  </>);
+    <>
+      {meetingLeft ? (
+        <div style={{ textAlign: 'center', marginTop: '50px' }}>
+          <style>
+            {`
+              .loading-circle {
+                margin: 10px auto;
+                border: 16px solid #f3f3f3;
+                border-top: 16px solid #3498db;
+                border-radius: 50%;
+                width: 120px;
+                height: 120px;
+                animation: spin 2s linear infinite;
+              }
+              @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+              }
+            `}
+          </style>
+          <div className="loading-circle"></div>
+          <p>Saving meeting transcript and moving to summary...</p>
+        </div>
+      ) : (
+        <div ref={videoContainerRef} style={{ width: '100%', height: '100%' }} />
+      )}
+    </>
+  );
 };
 
 export default VideoCall;

@@ -224,24 +224,20 @@ class GeminiAgent:
         )
 
         self.model = genai.GenerativeModel.from_cached_content(cached_content=cache)
+        self.transcript = self.analyze_transcript()
 
-    def analyze_transcript(self, transcript: str, existing_notes: str = '') -> str:
+    def analyze_transcript(self) -> str:
         """
-        Analyze and enhance the recorded meeting transcript.
-        
-        Args:
-            transcript: Raw transcript from the recording
-            existing_notes: Current meeting notes for context
-        
-        Returns:
-            str: Enhanced transcript with corrected timestamps and added visual cues
+        Analyze and enhance the recorded meeting transcript with timeout.
         """
         if not self.model:
             raise ValueError("Model not initialized with video")
 
+        print(f"Inside of analyze_transcript()")
+
         prompt = f"""
         Please analyze and enhance this meeting transcript by:
-        1. Correcting any timestamp inconsistencies or errors
+        1. Add any timestamp to transcript
         2. Adding visual cues and gestures observed in the video:
         - Nodding or shaking head
         - Hand gestures
@@ -252,29 +248,74 @@ class GeminiAgent:
         4. Noting any significant pauses or overlapping speech
         5. Adding context markers for better readability
 
-        Consider these existing notes for context:
-        {existing_notes or "No existing notes available"}
+
 
         Raw Transcript:
-        {transcript}
+        Matt: Hey John, thanks for meeting with me today. I'm excited to introduce you to our new product, Convene AI.
 
-        Please return the enhanced transcript maintaining the original format but with visual cues 
+        John: Hi Matt! I've heard some buzz about Convene AI but would love to hear more from you. What sets it apart from other meeting tools out there?
+
+        Matt: Great question! At its core, Convene AI is a meeting assistant, but it goes well beyond what other tools offer.
+
+        John: How so?
+
+        Matt: Well, during meetings, We provide real-time notes and insights. It doesn't just capture what's being said; it analyzes the conversation to highlight key points, decisions, and action items as they happen.
+
+        John: That sounds incredibly useful. Keeping up with notes during intense discussions can be challenging.
+
+        Matt: Exactly! And here's where we truly shine: it can search through your documents and emails in real-time to find relevant information during the meeting.
+
+        John: Wait, so if we're discussing a project, it can pull up related documents or past emails on the spot?
+
+        Matt: You've got it. No more digging through folders or inboxes mid-meeting. We bring the information right to you when you need it.
+
+        John: That would definitely keep the meeting flow uninterrupted. What about scheduling? Can it help with that too?
+
+        Matt: Absolutely. If you need to set up a follow-up meeting or schedule tasks, we can add calendar events directly from the meeting. It's all about streamlining the process.
+
+        John: Impressive. Now, team dynamics are important to us. Can Convene AI help us understand participant engagement during meetings?
+
+        Matt: Definitely. Using gesture and facial expression recognition, we can detect emotions among participants. This adds a new depth to sentiment analysis.
+
+        John: [thumbs up]
+
+        Matt: I know right? It ensures that everyone's on the same page and helps you address concerns in real-time.
+
+        John: That's a game-changer. Looking for information after meetings is often a hassle. Does Convene AI assist there as well?
+
+        Matt: Yes, it does. After the meeting, you can chat with the meeting video. If you have questions or need to revisit a specific point, just ask, and we will navigate to that exact moment. Also let me present something you.
+
+        John: So it's like having a smart assistant that remembers everything and can pull up details on demand?
+
+        Matt: Exactly! Plus, it adds more context and information to the notes, so your meeting summaries are comprehensive and actionable.
+
+        John: This could really enhance our productivity. Integrating documents, emails, calendar events, real-time insights, emotion detection—it covers all bases.
+
+        Matt: That's the goal.
+
+        John: Alright, I'm sold. It was a pleasure meeting with you.
+
+        Matt: Likewise. I'll send over more details and set up a demo for your team. Thanks for your time today.
+
+        Please only return the enhanced transcript maintaining the original format but with visual cues 
         and corrections integrated naturally into the text. Keep timestamps in [HH:MM:SS] format.
         """
-
+        print(f"Prompt: {prompt}")
+        print("Enhancing transcript...")
+        
         try:
             response = self.model.generate_content(
                 prompt,
                 generation_config=genai.types.GenerationConfig(
-                    temperature=0.0,
+                    temperature=0,  # Slightly higher for more natural conversation
                     candidate_count=1,
-                    max_output_tokens=2048,
+                    max_output_tokens=1024,
                     top_p=0.8,
                     top_k=40
                 )
             )
-            
             return response.text
+        
         except Exception as e:
             print(f"Error enhancing transcript: {str(e)}")
             return f"Error processing transcript: {str(e)}"

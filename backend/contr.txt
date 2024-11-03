@@ -1,0 +1,367 @@
+commit fadeb3eb43379cbec2dfaeeaaeeea8d687118a65
+Author: Anwar Mujeeb <ibnmujeeb2003@gmail.com>
+Date:   Sun Nov 3 11:33:22 2024 -0800
+
+    Updated gitignore
+
+commit fccef9587e1d982f2bce66034720d2bf6ba1a62c
+Author: Anwar Mujeeb <ibnmujeeb2003@gmail.com>
+Date:   Sun Nov 3 11:31:51 2024 -0800
+
+    Updated with backend gemini routes
+
+commit bee53189445db8d032708f677028b1fbd5f01135
+Merge: fc37ca0 6905728
+Author: Russell Semsem <109185074+russellsemsem@users.noreply.github.com>
+Date:   Sun Nov 3 11:09:14 2024 -0800
+
+    Merge pull request #14 from AnwarMP/updated-meeting-notes
+    
+    updated notes ui and markdown
+
+commit 69057283154ca651d5ca6d1f3d25d0f0d50ccfd0
+Author: Russell Semsem <109185074+russellsemsem@users.noreply.github.com>
+Date:   Sun Nov 3 11:07:55 2024 -0800
+
+    updated notes ui and markdown
+
+commit fc37ca00a297e461b46587380efcc50a2aabf10e
+Merge: 7ed236e 4fa7752
+Author: wxuan03 <87044306+wxuan03@users.noreply.github.com>
+Date:   Sun Nov 3 11:05:15 2024 -0800
+
+    Merge pull request #13 from AnwarMP/transcript-section
+    
+    added transcript section on summary page
+
+commit 4fa77521d8fd3a3d5f7d7fef1cce9aabe52f80dc
+Author: William Xuan <xuanwilliam8@gmail.com>
+Date:   Sun Nov 3 10:47:10 2024 -0800
+
+    added transcript section on summary page
+
+commit 7ed236ea43a63a9eedc2610f73b87e5b543d7f51
+Merge: 1e65b17 ec3eeb8
+Author: wxuan03 <87044306+wxuan03@users.noreply.github.com>
+Date:   Sun Nov 3 10:17:54 2024 -0800
+
+    Merge pull request #12 from AnwarMP/landing
+    
+    created landing page
+
+commit 1e65b17762c619abe9502d9276c4face93830c99
+Merge: 0f93b13 e1b0367
+Author: Russell Semsem <109185074+russellsemsem@users.noreply.github.com>
+Date:   Sun Nov 3 10:17:35 2024 -0800
+
+    Merge pull request #11 from AnwarMP/meeting-transition
+    
+    added meeting to summary transition
+
+commit 0f93b13001238c6413c9deff917b1fb03d8eca30
+Author: Anwar Mujeeb <ibnmujeeb2003@gmail.com>
+Date:   Sun Nov 3 10:08:08 2024 -0800
+
+    updated notes functionality
+
+commit ec3eeb8f6ce9687be4fb42a0a83baf7b8316a485
+Author: William Xuan <xuanwilliam8@gmail.com>
+Date:   Sun Nov 3 10:03:25 2024 -0800
+
+    created landing page
+
+commit e1b03679a784bfff3fb330a0babf45caaf62c5cc
+Author: Russell Semsem <109185074+russellsemsem@users.noreply.github.com>
+Date:   Sun Nov 3 09:55:07 2024 -0800
+
+    added meeting to summary transition
+
+commit 14f53fe1b57fcc903a2a163b4616fa9f487e85ac
+Author: MatinKhajavi <mat.khajavi@gmail.com>
+Date:   Sun Nov 3 09:48:12 2024 -0800
+
+    Update the prompts in agent.py
+
+commit e3e1f2beb09b5367efaabf34c225cc2b9a8f5329
+Merge: 03f2c9f 4d19515
+Author: wxuan03 <87044306+wxuan03@users.noreply.github.com>
+Date:   Sun Nov 3 09:44:18 2024 -0800
+
+    Merge pull request #10 from AnwarMP/chat-fix
+    
+    fixed chat
+
+commit 4d19515a0eb0b84071c3c17cc4c0f2a905c4d48f
+Author: William Xuan <xuanwilliam8@gmail.com>
+Date:   Sun Nov 3 09:20:29 2024 -0800
+
+    fixed chat
+
+commit 03f2c9face96e6f5ac0aa672f209956c0ee7d267
+Author: MatinKhajavi <mat.khajavi@gmail.com>
+Date:   Sun Nov 3 09:17:45 2024 -0800
+
+    Update the prompt in agent.py.
+
+commit 77e32e96dd0d074298aa84c8920d721b146978a5
+Author: MatinKhajavi <mat.khajavi@gmail.com>
+Date:   Sun Nov 3 09:01:32 2024 -0800
+
+    Remove unrelated files.
+
+commit bbc513efed21693706be31784705f22a4c4cc1bb
+Author: MatinKhajavi <mat.khajavi@gmail.com>
+Date:   Sun Nov 3 08:40:28 2024 -0800
+
+    Update agent.py
+
+commit cb8ad34756936a8b7cc9dd6d5b223e8c1940f16a
+Merge: b602694 4db0b91
+Author: Anwar Mujeeb <ibnmujeeb2003@gmail.com>
+Date:   Sun Nov 3 02:25:17 2024 -0800
+
+    Merge branch 'main' of github.com:AnwarMP/ConveneAI
+
+commit b6026941e791d188a3c0faeaeb4278ae5702e1ec
+Author: Anwar Mujeeb <ibnmujeeb2003@gmail.com>
+Date:   Sun Nov 3 02:23:06 2024 -0800
+
+    updated with requirements... for m1
+
+commit 4db0b9197f84ec013a39c360b598d67f4e1acc0f
+Merge: 2ee5e87 dcf18cb
+Author: wxuan03 <87044306+wxuan03@users.noreply.github.com>
+Date:   Sun Nov 3 02:11:07 2024 -0800
+
+    Merge pull request #9 from AnwarMP/summary-notes
+    
+    fixed notes
+
+commit 2ee5e87ff7f85e7cade2dcea2bf914e190e4f152
+Author: Anwar Mujeeb <ibnmujeeb2003@gmail.com>
+Date:   Sun Nov 3 02:10:32 2024 -0800
+
+    Update README and instructions
+
+commit dcf18cb0403a804ad48ac87e765192c88022e7ed
+Author: William Xuan <xuanwilliam8@gmail.com>
+Date:   Sun Nov 3 02:06:38 2024 -0800
+
+    fixed notes
+
+commit fb202465a91f99aff117162423130b56d24c2932
+Author: Anwar Mujeeb <ibnmujeeb2003@gmail.com>
+Date:   Sun Nov 3 01:36:04 2024 -0800
+
+    Fixed errors with previous commit, manually merged differences
+
+commit c6a003ebe43b84617e6aea62c91603f7d9736c9a
+Merge: 3ff5757 afc07a7
+Author: Anwar Mujeeb <48641952+AnwarMP@users.noreply.github.com>
+Date:   Sun Nov 3 01:20:13 2024 -0800
+
+    Merge pull request #8 from AnwarMP/transcript-notes-pipeline
+    
+    Update with improved demo
+
+commit afc07a7afd1daf19cfe68f81eeecbf8d4d57df0a
+Author: Anwar Mujeeb <ibnmujeeb2003@gmail.com>
+Date:   Sun Nov 3 01:04:28 2024 -0800
+
+    Update with improved demo
+
+commit 3ff5757b86810414dd001d672af7b7a445f2d65c
+Merge: d7cd65f c1c5f20
+Author: William Xuan <xuanwilliam8@gmail.com>
+Date:   Sun Nov 3 01:55:17 2024 -0700
+
+    Merge branch 'main' of https://github.com/AnwarMP/ConveneAI
+
+commit d7cd65f5978c383d6241bcbe87ccc2067a01ad55
+Author: William Xuan <xuanwilliam8@gmail.com>
+Date:   Sun Nov 3 01:52:14 2024 -0700
+
+    summary and notes component
+
+commit c1c5f208ec37d30295841f9e619a0b47c6611b62
+Merge: e784c76 fcea7b0
+Author: Anwar Mujeeb <48641952+AnwarMP@users.noreply.github.com>
+Date:   Sun Nov 3 01:27:29 2024 -0700
+
+    Merge pull request #7 from AnwarMP/transcript-notes-pipeline
+    
+    Implemented expanded context where entire transcript from beginning i…
+
+commit fcea7b0382e11bbb163a267ae6ff0c0700109a2a
+Author: Anwar Mujeeb <ibnmujeeb2003@gmail.com>
+Date:   Sun Nov 3 01:24:11 2024 -0700
+
+    Implemented expanded context where entire transcript from beginning is given rather than just a simple summary, which caused accuracy issues
+
+commit e784c76fb33d8ed619390e581bd9366b30175750
+Merge: adb06b8 ab1c799
+Author: Anwar Mujeeb <48641952+AnwarMP@users.noreply.github.com>
+Date:   Sun Nov 3 01:02:32 2024 -0700
+
+    Merge pull request #6 from AnwarMP/transcript-notes-pipeline
+    
+    Transcript notes pipeline
+
+commit ab1c79923c20d4f4309952de2864b0ed69ac4a0f
+Author: Anwar Mujeeb <ibnmujeeb2003@gmail.com>
+Date:   Sun Nov 3 01:01:42 2024 -0700
+
+    Updated with summary context as well as the transcript, detailed logging included
+
+commit 337cc7b84e3829880a03bf4277d488df4b7faa6c
+Author: Anwar Mujeeb <ibnmujeeb2003@gmail.com>
+Date:   Sun Nov 3 00:25:04 2024 -0700
+
+    Updated pipeline to call transcript agent and render in notesection
+
+commit adb06b8f11d5e4547087c35ef5c885dc3de2a2b7
+Merge: 93e28c9 9c54dd7
+Author: Russell Semsem <109185074+russellsemsem@users.noreply.github.com>
+Date:   Sat Nov 2 22:49:17 2024 -0700
+
+    Merge pull request #5 from AnwarMP/video-recording-page
+    
+    Restructured Frontend Routing / Structure
+
+commit 9c54dd7473bc8f5dee632563548e5da42c796248
+Author: Russell Semsem <109185074+russellsemsem@users.noreply.github.com>
+Date:   Sat Nov 2 22:48:23 2024 -0700
+
+    Updated summary page
+
+commit 5dd7a53fe959998aa354656e596ac0cff363b6bf
+Author: Russell Semsem <109185074+russellsemsem@users.noreply.github.com>
+Date:   Sat Nov 2 21:31:55 2024 -0700
+
+    fixed nav bar
+
+commit f4500dd44afd28de9d6f1989e458d547bd7cb910
+Author: Russell Semsem <109185074+russellsemsem@users.noreply.github.com>
+Date:   Sat Nov 2 21:28:14 2024 -0700
+
+    created nav-bar component
+
+commit d1a460ec3129483c34841b387db76cc2e45f239c
+Author: Russell Semsem <109185074+russellsemsem@users.noreply.github.com>
+Date:   Sat Nov 2 21:08:41 2024 -0700
+
+    Created Routes to different pages: landing, meeting, summary
+
+commit 93e28c9e41a7e8c7f529b62f475db3e51163f1ab
+Merge: 6cfcb39 704eedd
+Author: Russell Semsem <109185074+russellsemsem@users.noreply.github.com>
+Date:   Sat Nov 2 20:12:39 2024 -0700
+
+    Merge pull request #4 from AnwarMP/transcript
+    
+    Retrieved transcript JSON format
+
+commit 704eedd2b2d7441d82de92fe09a582aebccc6b0e
+Author: Russell Semsem <109185074+russellsemsem@users.noreply.github.com>
+Date:   Sat Nov 2 20:07:41 2024 -0700
+
+    Retrieved transcript JSON format
+
+commit 6cfcb394ca9047f7e787a1d6495b4182b1cb4634
+Author: William Xuan <xuanwilliam8@gmail.com>
+Date:   Sat Nov 2 19:57:18 2024 -0700
+
+    chat and notes with some styling
+
+commit e4b51fa9d68044e287b871beb004e4c06e32e747
+Merge: 99e53f9 89c260d
+Author: Anwar Mujeeb <48641952+AnwarMP@users.noreply.github.com>
+Date:   Sat Nov 2 19:50:14 2024 -0700
+
+    Merge pull request #3 from AnwarMP/backend/agent-query-document-service
+    
+    Backend/agent query document service
+
+commit 89c260dc94c07cba4c0b6b3d27355d6619c90fc8
+Author: Anwar Mujeeb <ibnmujeeb2003@gmail.com>
+Date:   Sat Nov 2 19:45:03 2024 -0700
+
+    Updated with a gmail query method, requires a .credentials folder
+
+commit 99e53f9aa03fc8453cc2baf47242544df4f6686b
+Author: William Xuan <xuanwilliam8@gmail.com>
+Date:   Sat Nov 2 19:19:36 2024 -0700
+
+    fixed recording
+
+commit 98dd8f2c0d285e78ab437193384842914ca61232
+Merge: 97b4300 549f4e0
+Author: Russell Semsem <109185074+russellsemsem@users.noreply.github.com>
+Date:   Sat Nov 2 18:45:57 2024 -0700
+
+    Merge pull request #2 from AnwarMP/notes_and_chat
+    
+    Notes and chat
+
+commit 549f4e055484e8453f69a25c08572347adfb4469
+Author: William Xuan <xuanwilliam8@gmail.com>
+Date:   Sat Nov 2 18:44:03 2024 -0700
+
+    added toggle for chat and notes, fake gemini and hardcoded notes for now
+
+commit 97b43002b086244c2cf057ac2d48695e0a110c27
+Merge: c1ced30 abfe7ba
+Author: Russell Semsem <109185074+russellsemsem@users.noreply.github.com>
+Date:   Sat Nov 2 18:36:22 2024 -0700
+
+    Merge pull request #1 from AnwarMP/daily-output
+    
+    added video recording
+
+commit abfe7baed86d2561b1cc8443b4fd429082fe471d
+Author: Russell Semsem <109185074+russellsemsem@users.noreply.github.com>
+Date:   Sat Nov 2 18:31:56 2024 -0700
+
+    added video recording
+
+commit 4df74ab0c5d8d0685286d02315e1eae423652e2d
+Author: William Xuan <xuanwilliam8@gmail.com>
+Date:   Sat Nov 2 18:09:26 2024 -0700
+
+    initial notes no chat yet just updated every 10 sec, hardcoded msg
+
+commit 50accc8c2df08881eadf89f965bf0809f20a31c4
+Author: Anwar Mujeeb <ibnmujeeb2003@gmail.com>
+Date:   Sat Nov 2 18:03:15 2024 -0700
+
+    Updated requirements.txt and readme with backend instructions
+
+commit be267f9e85a3b1a02460dfa1f3e13cd17e134b8c
+Author: Anwar Mujeeb <ibnmujeeb2003@gmail.com>
+Date:   Sat Nov 2 17:25:02 2024 -0700
+
+    Updated with code to generate detailed queries based on the transcript
+
+commit c1ced302a644c99f88e4882a6e9bccd326323721
+Author: William Xuan <xuanwilliam8@gmail.com>
+Date:   Sat Nov 2 17:11:37 2024 -0700
+
+    frontend
+
+commit cec76ec0a0556ecbcd544d4d053c2cab12b25e7e
+Author: Anwar Mujeeb <ibnmujeeb2003@gmail.com>
+Date:   Sat Nov 2 14:51:32 2024 -0700
+
+    Updated with basic running flask application
+
+commit a74055464c0278d05d5304b9f8070e393bbcd056
+Author: MatinKhajavi <mat.khajavi@gmail.com>
+Date:   Sat Nov 2 15:04:59 2024 -0700
+
+    Add MeetingAnalysisAgent for real-time meeting transcription.
+
+commit 26c449b92754ee0d68d1e8a7ea9b11296887cf28
+Author: Anwar Mujeeb <48641952+AnwarMP@users.noreply.github.com>
+Date:   Sat Nov 2 11:00:20 2024 -0700
+
+    Initial commit

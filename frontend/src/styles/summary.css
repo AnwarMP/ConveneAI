@@ -1,3 +1,53 @@
+.summary-container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    align-items: stretch;
+    height: 100vh; /* Full page height */
+    overflow: hidden; /* Prevent overflow on the page */
+}
+
+.left-section,
+.right-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; 
+    height: 100%;
+}
+
+/* Left Section for Video and Notes */
+.left-section {
+    flex: 2;
+    overflow: hidden; /* Prevent overflow */
+}
+
+.recording {
+    flex: 1;
+}
+
+.notes {
+    flex: 2;
+    overflow-y: auto; /* Make notes scrollable */
+    max-height: 50%; /* Adjust as needed to fit layout */
+}
+
+/* Right Section for Chat and Transcript */
+.right-section {
+    flex: 1;
+}
+
+.chat-box-container {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 50%; /* Match the height of the video */
+}
+
+.transcript {
+    flex: 1;
+    overflow-y: auto; /* Allow transcript to scroll */
+    max-height: 50%; /* Adjust to balance layout */
+}
+
 /* Main summary container */
 .summary-container {
     display: flex;

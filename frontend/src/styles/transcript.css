@@ -1,0 +1,139 @@
+.transcript-container {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+    overflow: hidden;
+  }
+  
+  .transcript-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .transcript-title {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .transcript-title h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #333;
+  }
+  
+  .transcript-date {
+    font-size: 0.875rem;
+    color: #666;
+  }
+  
+  .transcript-toggle {
+    padding: 8px 16px;
+    background-color: #4b7bec;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background-color 0.2s ease;
+  }
+  
+  .transcript-toggle:hover {
+    background-color: #3867d6;
+  }
+  
+  .transcript-content {
+    transition: max-height 0.3s ease-in-out;
+    max-height: 0;
+    overflow: hidden;
+  }
+  
+  .transcript-content.expanded {
+    max-height: 600px;
+    overflow-y: auto;
+  }
+  
+  .transcript-text {
+    padding: 20px;
+  }
+  
+  .transcript-line {
+    padding: 4px 0;
+    line-height: 1.5;
+    font-size: 0.9375rem;
+    color: #333;
+  }
+  
+  .transcript-line:nth-child(even) {
+    background-color: #f8f9fa;
+  }
+  
+  .transcript-preview {
+    padding: 20px;
+    text-align: center;
+    color: #666;
+    font-style: italic;
+  }
+  
+  .transcript-loading,
+  .transcript-error {
+    padding: 40px;
+    text-align: center;
+    color: #666;
+  }
+  
+  /* Scrollbar styling for the transcript content */
+  .transcript-content {
+    scrollbar-width: thin;
+    scrollbar-color: #4b7bec #f0f0f0;
+  }
+  
+  .transcript-content::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .transcript-content::-webkit-scrollbar-track {
+    background: #f0f0f0;
+  }
+  
+  .transcript-content::-webkit-scrollbar-thumb {
+    background-color: #4b7bec;
+    border-radius: 4px;
+  }
+
+
+  .transcript-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px;
+    text-align: center;
+  }
+  
+  .loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+  }
+  
+  .transcript-error {
+    padding: 20px;
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    margin-bottom: 20px;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
