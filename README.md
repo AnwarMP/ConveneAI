@@ -5,7 +5,8 @@ Here's an updated README with comprehensive setup instructions using `environmen
 ---
 
 # ConveneAI  
-Intelligent meeting tool that works with your data 
+Intelligent meeting tool that works with your data
+[Watch the demo on YouTube](https://youtu.be/UrPxVnRMtsM)
 
 ## Frontend Setup
 
