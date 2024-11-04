@@ -3,11 +3,9 @@ import Nav from '../components/Nav';
 import Chat from '../components/Chat';
 import '../styles/summary.css';
 import TranscriptViewer from '../components/TranscriptViewer';
-import { useNotes } from '../context/NotesContext';
+import Notes from '../components/Notes';
 
 export const Summary = () => {
-  const { notes } = useNotes();
-
   return (
     <div>
       <Nav />
@@ -23,15 +21,9 @@ export const Summary = () => {
             </div>
           </div>
 
-          <div className="notes">
-            <h2>Meeting Notes</h2>
-            <div className="notes-content">
-              <ul>
-                {notes.map((note, index) => (
-                  <li key={index}>{note}</li>
-                ))}
-              </ul>
-            </div>
+          {/* Wrap Notes in a scrollable container */}
+          <div className="notes-wrapper">
+            <Notes />
           </div>
         </div>
 
