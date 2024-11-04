@@ -212,3 +212,72 @@
 .chat-send-button:hover {
     background-color: #3a64c7;
 }
+
+/* Add these styles to your summary.css file */
+
+.summary-container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    height: calc(100vh - 8vh); /* Subtract nav height */
+    overflow: hidden;
+}
+
+.left-section {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 100%;
+}
+/* Update these styles in your summary.css */
+
+.recording {
+    flex: 0 0 auto;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.recording-placeholder {
+    width: 100%;
+    aspect-ratio: 16 / 9; /* Maintain video aspect ratio */
+    background: black;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.recording-placeholder video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* This maintains aspect ratio */
+}
+
+/* Adjust notes wrapper to take remaining space */
+.notes-wrapper {
+    flex: 1;
+    overflow-y: auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    min-height: 0;
+    /* Calculate remaining space */
+    height: calc(100vh - 8vh - 400px); /* Adjust 400px based on your video size */
+}
+
+/* Ensure container maintains proper layout */
+.summary-container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    height: calc(100vh - 8vh);
+    overflow: hidden;
+}
+
+.left-section {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 100%;
+    overflow: hidden;
+}

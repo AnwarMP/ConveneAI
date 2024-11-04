@@ -3,7 +3,7 @@ import Nav from '../components/Nav';
 import Chat from '../components/Chat';
 import '../styles/summary.css';
 import TranscriptViewer from '../components/TranscriptViewer';
-import Notes from '../components/Notes'; // Import the Notes component
+import Notes from '../components/Notes';
 
 export const Summary = () => {
   return (
@@ -21,8 +21,10 @@ export const Summary = () => {
             </div>
           </div>
 
-          {/* Reuse the Notes component to match the Meeting.js UI */}
-          <Notes />
+          {/* Wrap Notes in a scrollable container */}
+          <div className="notes-wrapper">
+            <Notes />
+          </div>
         </div>
 
         <div className="right-section">
