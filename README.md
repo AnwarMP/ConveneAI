@@ -1,8 +1,3 @@
-Here's an updated README with comprehensive setup instructions using `environment.yml` and including the `.credentials` directory setup:
-
-
-
----
 
 # ConveneAI  
 Intelligent meeting tool that works with your data
